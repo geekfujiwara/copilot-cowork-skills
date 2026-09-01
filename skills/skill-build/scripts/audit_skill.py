@@ -177,6 +177,8 @@ def check_refs(root, texts):
         for link in re.findall(r"\]\(([^)#][^)]*)\)", body):
             if link.startswith(("http://", "https://", "mailto:")):
                 continue
+            if link in ("...", "…") or "<" in link or "{" in link:
+                continue          # Markdown 記法例・実行時プレースホルダーはリンクではない
             tgt = os.path.normpath(os.path.join(os.path.dirname(rel), link.split("#")[0]))
             if not os.path.exists(os.path.join(root, tgt)):
                 broken.append("%s -> %s" % (rel, link))

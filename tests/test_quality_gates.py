@@ -67,6 +67,16 @@ class SafetyAuditTests(unittest.TestCase):
         results = audit_skill.check_safety({"SKILL.md": text})
         self.assertFalse([item for item in results if item["status"] == "FAIL"])
 
+    def test_markdown_syntax_example_is_not_a_link(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "SKILL.md").write_text(
+                "Markdown image syntax: `![](...)`", encoding="utf-8"
+            )
+            results = audit_skill.check_refs(str(root), {"SKILL.md": "Markdown image syntax: `![](...)`"})
+            failures = [item for item in results if item["status"] == "FAIL"]
+            self.assertFalse(failures)
+
 
 class CatalogTests(unittest.TestCase):
     def test_repository_passes_publication_gate(self):
