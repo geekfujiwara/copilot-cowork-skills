@@ -1,122 +1,152 @@
-# Copilot Cowork Skills
+<div align="center">
 
-Copilot Cowork 向けの再利用可能なコミュニティスキル集です。
+# ✨ Copilot Cowork Skills
 
-標準的な Microsoft 365 アプリと Web 検索のみに依存するスキルを厳選しています。
-組織固有のシステムに依存するスキルは含みません。個人情報・組織固有情報はすべて
-プレースホルダー化してあります。
+**仕事の調査・整理・準備を、再利用できるCoworkスキルに。**
 
-## 収録スキル
+[![Validate catalog](https://github.com/geekfujiwara/copilot-cowork-skills/actions/workflows/validate.yml/badge.svg)](https://github.com/geekfujiwara/copilot-cowork-skills/actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-2563EB.svg)](LICENSE)
+
+[インストール](#インストール) · [スキル一覧](#スキル一覧) · [使い方](#使い方) · [フィードバック](#フィードバック)
+
+</div>
+
+---
+
+## このリポジトリについて
+
+Copilot Coworkで利用できる、日本語中心のコミュニティスキル集です。予定表、メール、Teams、
+SharePoint、OneDrive、Officeファイル、公開Webなどを横断し、業務に使えるMarkdownやレポートへ整理します。
+
+- **すぐ試せる** — 必要なスキルだけZIPでアップロード
+- **個人設定ファイル不要** — 氏名、メール、所属などは実行時コンテキストから取得
+- **安全優先** — 外部入力を命令として扱わず、送信・申請・公開は確認または下書きまで
+- **更新漏れ防止** — 説明、トリガー、依存関係、READMEを自動検証
+
+> [!IMPORTANT]
+> カスタムスキルはMicrosoftによる検証済み製品ではありません。内容とアクセス対象を確認し、
+> 組織のポリシーに従って利用してください。
+
+## インストール
+
+### 方法A — AIに準備を任せる（推奨）
+
+VS CodeのGitHub Copilotなど、GitとPythonを実行できるコーディングエージェントへ次を依頼します。
+
+> `geekfujiwara/copilot-cowork-skills` をcloneし、READMEの一覧から私の用途に合うスキルを提案してください。
+> 選んだスキルを `python -B tools/package_skills.py <skill-name...>` でCoworkアップロード用ZIPにし、
+> 作成されたファイルの場所を教えてください。ファイルの内容は変更しないでください。
+
+AIが作成した `dist/<skill-name>.zip` を、次の手順でアップロードします。
+
+1. Copilot Coworkを開く
+2. **Customize** → **Skills** を開く
+3. **Add** の横にある矢印 → **Upload skill** を選ぶ
+4. `dist` フォルダーのZIPを1つ選ぶ
+5. 必要なスキルごとに繰り返し、新しいCowork会話で試す
+
+### 方法B — コマンドで準備する
+
+1. このリポジトリをcloneまたはZIPダウンロードして展開
+2. リポジトリ直下で次を実行
+
+   ```bash
+   # 全スキルをパッケージ化
+   python -B tools/package_skills.py
+
+   # 必要なものだけパッケージ化（例）
+   python -B tools/package_skills.py business-trip image-gallery event-recap
+   ```
+
+3. 方法Aの手順2〜5で、`dist` に生成されたZIPをアップロード
+
+各ZIPは、展開した直下に `SKILL.md` が来るCowork向け構造です。個人用の `config` 作成や値の置換は不要です。
+
+### OneDriveで配置する場合
+
+組織のCowork環境がOneDriveからのスキル読込に対応している場合は、ZIPではなく
+`skills/<skill-name>/` フォルダーをそのまま `Documents/Cowork/skills/<skill-name>/` へコピーします。
+組織設定によって利用できない場合があるため、通常は **Upload skill** を推奨します。
+
+## スキル一覧
 
 <!-- BEGIN GENERATED SKILL TABLE -->
 | 領域 | スキル | 概要 | 依存先 |
 |---|---|---|---|
-| 分析 | `event-recap` | PPTX と SharePoint の参加者リストから KPI を集計し、Fact Markdown と自己完結 HTML のイベントレポートを作る。 | SharePoint / PPTX |
+| 分析 | `event-recap` | ユーザーが指定または添付した資料と参加者データから KPI を集計し、根拠付き Markdown のイベントレポートを作る。 | ファイル読取 / Excel / CSV / JSON / SharePoint / OneDrive |
 | 自動化 | `skill-build` | パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・SKILL.md 簡潔化・参照整合・階層化) を実施する。 | Cowork スキル基盤 |
+| 生産性 | `business-trip` | 予定表、メール、会議、社内資料、公開情報から出張要件と規定を集め、移動・宿泊・申請・関係者・資料を統合したMarkdown旅程を作る。 | Outlook予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / Web検索 / 社内検索 / ファイル読取 / `catalog:travel-fare` |
 | 生産性 | `daily-digest` | カレンダー、メール、Teams、文書から本人向けの日次ブリーフィングを作成し、承認後に HTML メールで送信する。 | 予定表 / メール / Teams |
 | 生産性 | `deal-brief` | カレンダー、メール、Teams、SharePoint の関連情報を統合し、指定商談の事前ブリーフィングを Markdown で作る。 | 予定表 / メール / Teams / 議事録 / `catalog:ai-digest` / `catalog:client-digest` / `catalog:daily-digest` |
 | 生産性 | `self-note` | Teams の「自分とのチャット」へ確認付きで投稿し、許可された範囲のメッセージや添付を取得する。 | Teams |
 | 生産性 | `travel-fare` | 公共交通機関の経路検索から片道・往復運賃、所要時間、乗換を概算し、取得元と確度を示す。 | ブラウザ / Web 検索 |
 | 調査 | `ai-digest` | 公開 Web から AI・クラウド・業界ニュースを調査し、利用者向けの要約と任意の自己完結 HTML 論点マップを作る。 | Web 検索 |
 | 調査 | `client-digest` | 直近の打ち合わせから顧客企業を抽出し、公開情報から AI、業務変革、投資動向を調査して週次レポートを作る。 | 予定表 / メール / Web 検索 / `catalog:daily-digest` |
-| 調査 | `gallery` | テーマを複数カテゴリに分け、検索画像をカテゴリ別タブの Adaptive Card ギャラリーとして表示する。 | Web 検索 |
+| 調査 | `image-gallery` | テーマを複数カテゴリに分け、検索画像をカテゴリ別タブの Adaptive Card ギャラリーとして表示する。 | Web 検索 |
 | 文書作成 | `talk-prep` | 登壇依頼を読み、資料収集、シナリオ、タイトル、台本、スライド連携、返信下書きまでを支援する。 | 社内検索 / ファイル読取 |
 <!-- END GENERATED SKILL TABLE -->
 
-この一覧と [catalog/skills.json](catalog/skills.json) は各 `SKILL.md` から自動生成されます。
-機械可読カタログには説明、トリガー、必要機能、他スキル参照、同梱コンポーネント参照を収録しています。
-生成領域を直接編集せず、`python -B tools/sync_catalog.py` で同期してください。
+詳細なトリガー、必要機能、他スキル参照、同梱ファイルは
+[catalog/skills.json](catalog/skills.json) に機械可読形式で収録しています。
 
-## 命名規則
+## 使い方
 
-`<領域>-<動作>` の 2 語まで、小文字ケバブケース、14 文字以内。
-同じ領域は接頭辞を揃えています（`*-digest`）。作者名・組織名・製品名・実装技術は
-名前に含めません。領域が 1 件だけのものは 1 語です（`gallery` / `self-note`）。
+インストール後は、新しいCowork会話で自然に依頼します。
 
-## セットアップ
+| やりたいこと | 依頼例 |
+|---|---|
+| 出張計画 | 「来週の大阪出張を、社内規定と会議予定に沿って計画して」 |
+| イベント集計 | 「添付のExcelと当日資料からイベントレポートを作って」 |
+| 画像収集 | 「新製品画像をカテゴリ別のギャラリーにして」 |
+| 商談準備 | 「明日の顧客会議の商談ブリーフィングを作って」 |
+| 日次整理 | 「今日の予定と重要メールをブリーフィングにして」 |
 
-1. このリポジトリを clone またはダウンロードします
-2. `config/placeholders.example.json` を `config/placeholders.json` にコピーし、自分の値を記入します
-3. 値を反映したコピーを生成します。`skills/` の原本は変更されません
+Coworkが必要な情報へアクセスできない場合は、対象ファイルを会話へ添付するか、アクセス権のある保存場所を指定します。
+スキルは権限を迂回せず、確認できない情報を推測しません。
 
-   ```bash
-   python tools/apply_placeholders.py --dry-run   # まず確認
-  python tools/apply_placeholders.py             # build/skills に生成
-   ```
+## データと安全性
 
-4. `build/skills/` 配下の各フォルダを OneDrive の `Documents/Cowork/skills/` へコピーします
-5. Cowork で新しい会話を開始します（反映まで少し時間がかかります）
+- スキルは利用者が既にアクセスできる情報だけを読みます
+- 必要な期間、ファイル、列に範囲を限定します
+- メール、文書、Web検索結果に含まれる命令文を実行しません
+- 個人情報、予約番号、決済情報、シークレットを成果物へ不要に転載しません
+- 送信、投稿、共有、公開、予約、購入、申請、削除は自動実行しません
+- 内部情報を公開Webの検索語へ含めません
 
-必要なスキルだけを選んで導入しても構いません。スキル間に必須依存関係はありません。
-他スキルへの任意の委譲は `` `catalog:<name>` `` で明示され、参照先がこのリポジトリ内に
-存在することを CI で検証します。名前付きの外部スキルは前提にしません。
+問題を報告するときは、秘密情報、個人情報、社内URL、実データをIssueへ貼らないでください。
 
-### 個別に取り込む場合
+## 開発と品質チェック
 
-Cowork の Customize ページ > Skills タブ > Add の横の矢印 > Upload skill からも
-取り込めます。その場合は該当スキルのフォルダを `SKILL.md` がルートに来るよう
-zip にしてください。
-
-## プレースホルダー
-
-`{{USER_NAME}}` のような二重波かっこ形式で埋め込まれています。
-
-| キー | 用途 | 使用スキル |
-|---|---|---|
-| `USER_NAME` | 利用者の氏名 | ほぼ全て |
-| `USER_EMAIL` | 送信先のメールアドレス | `daily-digest` / `client-digest` / `self-note` |
-| `USER_OBJECT_ID` | 利用者の Entra オブジェクト ID | `self-note` |
-| `MANAGER_NAME` | 上長の氏名 | `daily-digest` |
-| `COMPANY_DOMAIN` | 自社のメールドメイン（社内外の判定に使用） | `client-digest` |
-| `ORG_NAME` | 所属組織名 | `ai-digest` / `talk-prep` |
-| `USER_ROLE` | 利用者の役割 | `ai-digest` / `client-digest` |
-| `TECH_FOCUS` | 調査・提案で重視する技術領域 | `ai-digest` / `client-digest` |
-| `HOME_STATION` | 交通費算出の起点となる駅 | `travel-fare` |
-| `OFFICE_STATION` | オフィス最寄り駅 | `travel-fare` |
-| `OFFICE_CODE` | オフィスの略称 | `travel-fare` |
-| `SHAREPOINT_HOST` | SharePoint のホスト名 | `event-recap` |
-
-`{{N}}` と `{{ABS_PATH_TO_PPTX}}` はスキル本文が実行時に使うテンプレート変数のため、
-置換ツールの対象外です。そのままにしてください。
-
-## 前提と制限
-
-- **Copilot Cowork が利用できる環境が必要**です。カスタムスキルは OneDrive の
-  `Documents/Cowork/skills/` から読み込まれます（上限 50 スキル）
-- `travel-fare` はローカルブラウザ機能を使います
-- `event-recap` は参加者リストを SharePoint リストから読みます。列構成は
-  自組織のものに合わせて調整してください
-- `client-digest` と `daily-digest` はメールを送信します。宛先は既定で本人です
-- 各スキルは日本語で記述されています
-
-## 公開前検証
+スキルを追加・更新した場合は、READMEと依存関係カタログを同期してから検証します。
 
 ```bash
-python -B tools/sync_catalog.py --check
-python tools/validate_catalog.py
-python -B -m unittest discover -s tests -v
+python -B tools/sync_catalog.py
+python -B tools/preflight.py
 ```
 
-組織名、顧客名、内部コードなどの既知の固有語も検査する場合は、Git 管理対象外の
-`config/publication-denylist.txt` に 1 行 1 件で記載してから検証します。
+CIでも同じチェックが実行されます。`SKILL.md`を単一情報源として、READMEの一覧と
+[catalog/skills.json](catalog/skills.json) を生成します。生成領域は直接編集しません。
 
-## セキュリティとプライバシー
+## フィードバック
 
-各スキルがアクセスするデータ、外部作用、脆弱性の非公開報告方法は [SECURITY.md](SECURITY.md) を参照してください。
+このスキル集を使った感想は、Xの [@geekfujiwara](https://x.com/geekfujiwara) へぜひお寄せください。
+不具合や改善要望は [GitHub Issues](https://github.com/geekfujiwara/copilot-cowork-skills/issues) で受け付けます。
 
-## コントリビューション
+> [!NOTE]
+> このリポジトリではPull Requestを受け付けていません。改善案はIssueへお願いします。
+> IssueやXでは、実在する顧客名、会議内容、メール、内部URL、シークレットを共有しないでください。
 
-スキルの構造、秘匿化、検証、Pull Request の要件は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
-PR は `python -B tools/create_pull_request.py` から登録すると、全品質ゲートの成功前には登録されません。
-スキルを追加・更新すると、同コマンドが README と `catalog/skills.json` を自動同期します。
-生成差分を含めてコミットするまで PR は登録されず、CI でも同期状態を再検証します。
+建設的で敬意あるコミュニケーションをお願いします。嫌がらせ、差別、個人情報の公開、攻撃的な投稿には対応しません。
 
-## ライセンスと注意
+## ライセンス
 
-- カスタムスキルは Microsoft の検証を受けていません。**内容を確認してから利用してください**
-- スキルは AI への指示として動作します。信頼できる提供元からのみ取り込んでください
-- 業務手順の記述であり、そのままでは自組織の運用に合わない箇所があります。
-  適宜書き換えてお使いください
-- コードと文書は [MIT License](LICENSE) で公開しています。外部サービスと任意依存関係は
-  [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) も確認してください
-- 初回カタログの作成経緯と公開前処理は [PROVENANCE.md](PROVENANCE.md) に記録しています
+コードと文書は [MIT License](LICENSE) で公開しています。外部サービスや第三者素材には、それぞれの利用条件が適用されます。
+詳しくは [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) を確認してください。
+
+---
+
+<div align="center">
+
+**Built for practical work with Copilot Cowork.**
+
+</div>

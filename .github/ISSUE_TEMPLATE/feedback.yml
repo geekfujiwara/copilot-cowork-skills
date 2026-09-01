@@ -1,0 +1,35 @@
+name: 不具合・改善要望
+description: スキルの不具合、使いにくい点、新しいアイデアを共有する
+title: "[Feedback] "
+labels:
+  - feedback
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 種類
+      options:
+        - 不具合
+        - 改善要望
+        - 新しいスキルの提案
+    validations:
+      required: true
+  - type: input
+    id: skill
+    attributes:
+      label: 対象スキル
+      placeholder: business-trip
+  - type: textarea
+    id: detail
+    attributes:
+      label: 内容
+      description: 期待した動作と実際の動作、または改善案を記載してください。
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: 公開情報の確認
+      options:
+        - label: 個人情報、顧客名、会議内容、社内URL、シークレット、実データを含めていません。
+          required: true

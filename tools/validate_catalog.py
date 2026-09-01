@@ -13,9 +13,7 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parents[1]
 SKILLS = ROOT / "skills"
 REQUIRED_ROOT_FILES = {
-    "README.md", "LICENSE", "SECURITY.md", "CONTRIBUTING.md",
-    "CODE_OF_CONDUCT.md", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md",
-    "PROVENANCE.md", "catalog/skills.json",
+    "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "catalog/skills.json",
 }
 ALLOWED_CATEGORIES = {
     "productivity", "communication", "analysis", "writing", "research",
@@ -23,7 +21,8 @@ ALLOWED_CATEGORIES = {
 }
 ALLOWED_URL_HOSTS = {
     "example.com", "teams.microsoft.com", "graph.microsoft.com",
-    "www.google.com", "transit.yahoo.co.jp",
+    "www.google.com", "transit.yahoo.co.jp", "github.com", "x.com",
+    "img.shields.io", "schemas.openxmlformats.org",
 }
 TEXT_SUFFIXES = {".md", ".py", ".json", ".yml", ".yaml", ".txt"}
 RISKY_BINARY_SUFFIXES = {".exe", ".dll", ".ttf", ".ttc", ".otf", ".woff", ".woff2"}
@@ -184,13 +183,6 @@ def generated_file_errors() -> list[str]:
     return errors
 
 
-def load_denylist(path: Path | None) -> list[str]:
-    if not path or not path.exists():
-        return []
-    return [line.strip() for line in read_text(path).splitlines()
-            if line.strip() and not line.lstrip().startswith("#")]
-
-
 def validate_references(skill: Path, skill_names: set[str]) -> list[str]:
     """他スキルと同梱コンポーネントへの参照が解決できることを検証する。"""
     errors: list[str] = []
@@ -245,8 +237,7 @@ def validate_references(skill: Path, skill_names: set[str]) -> list[str]:
     return errors
 
 
-def validate_skill(skill: Path, configured: set[str], denylist: list[str],
-                   skill_names: set[str]) -> list[str]:
+def validate_skill(skill: Path, skill_names: set[str]) -> list[str]:
     errors: list[str] = []
     doc = skill / "SKILL.md"
     rel = doc.relative_to(ROOT).as_posix()
@@ -286,7 +277,7 @@ def validate_skill(skill: Path, configured: set[str], denylist: list[str],
         errors.append(f"{rel}: Step 番号が連番ではありません: {steps}")
 
     referenced = set(PLACEHOLDER_RE.findall(text))
-    unknown = sorted(referenced - configured - {"N", "ABS_PATH_TO_PPTX"})
+    unknown = sorted(referenced - {"N", "ABS_PATH_TO_PPTX"})
     if unknown:
         errors.append(f"{rel}: 未定義プレースホルダー: {', '.join(unknown)}")
 
@@ -295,10 +286,6 @@ def validate_skill(skill: Path, configured: set[str], denylist: list[str],
     if BYPASS_RE.search(text):
         errors.append(f"{rel}: ガードまたは承認を回避する指示があります")
 
-    for term in denylist:
-        if term.casefold() in text.casefold():
-            errors.append(f"{rel}: ローカル denylist の語が残っています: {term!r}")
-
     refs = skill / "references"
     if not refs.is_dir() or not (refs / "troubleshooting.md").is_file():
         errors.append(f"{rel}: references/troubleshooting.md がありません")
@@ -306,26 +293,18 @@ def validate_skill(skill: Path, configured: set[str], denylist: list[str],
     return errors
 
 
-def validate_repository(denylist_path: Path | None = None) -> list[str]:
+def validate_repository() -> list[str]:
     errors: list[str] = []
     for filename in sorted(REQUIRED_ROOT_FILES):
         if not (ROOT / filename).is_file():
             errors.append(f"{filename}: 必須ファイルがありません")
-
-    config_path = ROOT / "config" / "placeholders.example.json"
-    try:
-        config = json.loads(read_text(config_path))
-    except (OSError, json.JSONDecodeError) as exc:
-        return errors + [f"{config_path.relative_to(ROOT)}: 読み込めません: {exc}"]
-    configured = {key for key in config if not key.startswith("_")}
-    denylist = load_denylist(denylist_path)
 
     if not SKILLS.is_dir():
         return errors + ["skills/: ディレクトリがありません"]
     skill_dirs = sorted(path for path in SKILLS.iterdir() if path.is_dir())
     skill_names = {path.name for path in skill_dirs}
     for skill in skill_dirs:
-        errors.extend(validate_skill(skill, configured, denylist, skill_names))
+        errors.extend(validate_skill(skill, skill_names))
     errors.extend(generated_file_errors())
 
     for path in sorted(ROOT.rglob("*")):
@@ -363,12 +342,8 @@ def validate_repository(denylist_path: Path | None = None) -> list[str]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--denylist", type=Path,
-                        default=ROOT / "config" / "publication-denylist.txt",
-                        help="公開してはいけない固有語を 1 行 1 件で記載したローカルファイル")
-    args = parser.parse_args()
-    errors = validate_repository(args.denylist)
+    argparse.ArgumentParser(description=__doc__).parse_args()
+    errors = validate_repository()
     if errors:
         print(f"FAIL: {len(errors)} 件")
         for error in errors:

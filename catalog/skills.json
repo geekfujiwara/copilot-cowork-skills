@@ -21,6 +21,34 @@
       }
     },
     {
+      "name": "business-trip",
+      "category": "productivity",
+      "description": "予定表、メール、会議、社内資料、公開情報から出張要件と規定を集め、移動・宿泊・申請・関係者・資料を統合したMarkdown旅程を作る。 私的旅行、予約・購入・申請の自動実行、規定を確認できない経費判断には使用しない。",
+      "triggers": [
+        "出張の旅程を作って",
+        "商談に合わせてホテルと移動を計画して",
+        "plan my business trip",
+        "社内規定に沿った出張計画を作って"
+      ],
+      "dependencies": {
+        "capabilities": [
+          "Outlook予定表 / メール",
+          "Teams / 会議議事録",
+          "SharePoint / OneDrive",
+          "Web検索",
+          "社内検索",
+          "ファイル読取"
+        ],
+        "skills": [
+          "travel-fare"
+        ],
+        "components": [
+          "references/output-template.md",
+          "references/troubleshooting.md"
+        ]
+      }
+    },
+    {
       "name": "client-digest",
       "category": "research",
       "description": "直近の打ち合わせから顧客企業を抽出し、公開情報から AI、業務変革、投資動向を調査して週次レポートを作る。 単一企業の深掘り、社内業績レポート、日次ブリーフィングには使用しない。",
@@ -93,16 +121,17 @@
     {
       "name": "event-recap",
       "category": "analysis",
-      "description": "PPTX と SharePoint の参加者リストから KPI を集計し、Fact Markdown と自己完結 HTML のイベントレポートを作る。 会議議事録の要約や単純なメール・カレンダー操作には使用しない。",
+      "description": "ユーザーが指定または添付した資料と参加者データから KPI を集計し、根拠付き Markdown のイベントレポートを作る。 会議議事録の要約や単純なメール・カレンダー操作には使用しない。",
       "triggers": [
         "イベントレポートを作って",
-        "当日資料と参加者リストからファクトをまとめて",
+        "当日資料と参加者データからファクトをまとめて",
         "create an event recap"
       ],
       "dependencies": {
         "capabilities": [
-          "SharePoint",
-          "PPTX"
+          "ファイル読取",
+          "Excel / CSV / JSON",
+          "SharePoint / OneDrive"
         ],
         "skills": [],
         "components": [
@@ -110,14 +139,14 @@
           "references/fact_md_template.md",
           "references/kpi_catalog.md",
           "references/troubleshooting.md",
-          "scripts/aggregate_attendees.py",
+          "scripts/aggregate_records.py",
           "scripts/aggregate_scoring.py",
           "scripts/extract_pptx.py"
         ]
       }
     },
     {
-      "name": "gallery",
+      "name": "image-gallery",
       "category": "research",
       "description": "テーマを複数カテゴリに分け、検索画像をカテゴリ別タブの Adaptive Card ギャラリーとして表示する。 単一画像の表示、画像生成、文書への埋め込み、画像を伴わない調査には使用しない。",
       "triggers": [

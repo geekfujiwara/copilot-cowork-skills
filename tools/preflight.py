@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Pull Request 登録前と CI で共通利用する公開品質ゲート。"""
+"""ローカルと CI で共通利用する公開品質ゲート。"""
 from __future__ import annotations
 
 import argparse
@@ -9,10 +9,7 @@ from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_FILE_BYTES = 1024 * 1024
-FORBIDDEN_EXACT = {
-    "config/placeholders.json",
-    "config/publication-denylist.txt",
-}
+FORBIDDEN_EXACT: set[str] = set()
 FORBIDDEN_DIRS = {"build", "output", "working", "__pycache__"}
 
 
@@ -107,7 +104,7 @@ def main(argv: list[str] | None = None) -> int:
         ) and passed
 
     print("\n== 最終結果 ==")
-    print("PASS: PR 登録可能" if passed else "FAIL: PR を登録できません")
+    print("PASS: 公開可能" if passed else "FAIL: 公開できません")
     return 0 if passed else 1
 
 

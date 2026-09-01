@@ -48,7 +48,7 @@ RESERVED_PREFIXES = {
 TYPES = ("aggregation", "writing", "decision", "basic")
 
 # description 長チェックの閾値（文字数）
-DESC_RECOMMENDED = 300   # 推奨上限（{{USER_NAME}} 方針: description は 300 文字以下）
+DESC_RECOMMENDED = 300   # 推奨上限（description は 300 文字以下）
 DESC_HARD_LIMIT = 1024   # システムのハード上限（超過すると skill validation が失敗）
 
 

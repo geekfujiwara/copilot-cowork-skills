@@ -1,4 +1,0 @@
-# このファイルを publication-denylist.txt にコピーし、公開してはいけない固有語を 1 行 1 件で記載します。
-# 実際の社名、顧客名、プロジェクト名、内部コード、個人名は example ファイルへ書かないでください。
-
-Example Internal Project

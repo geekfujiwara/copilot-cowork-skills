@@ -5,6 +5,7 @@ import json
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,7 +20,6 @@ def load_module(name: str, path: Path):
     return module
 
 
-apply_placeholders = load_module("apply_placeholders", ROOT / "tools" / "apply_placeholders.py")
 validate_catalog = load_module("validate_catalog", ROOT / "tools" / "validate_catalog.py")
 preflight = load_module("preflight", ROOT / "tools" / "preflight.py")
 audit_skill = load_module(
@@ -28,20 +28,10 @@ audit_skill = load_module(
 scaffold_skill = load_module(
     "scaffold_skill", ROOT / "skills" / "skill-build" / "scripts" / "scaffold_skill.py"
 )
-
-
-class PlaceholderTests(unittest.TestCase):
-    def test_rejects_multiline_values(self):
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "config.json"
-            path.write_text(json.dumps({"USER_NAME": "line1\nline2"}), encoding="utf-8")
-            with self.assertRaises(ValueError):
-                apply_placeholders.load_config(path)
-
-    def test_example_config_is_valid(self):
-        config = apply_placeholders.load_config(ROOT / "config" / "placeholders.example.json")
-        self.assertIn("USER_NAME", config)
-        self.assertIn("USER_ROLE", config)
+aggregate_records = load_module(
+    "aggregate_records", ROOT / "skills" / "event-recap" / "scripts" / "aggregate_records.py"
+)
+package_skills = load_module("package_skills", ROOT / "tools" / "package_skills.py")
 
 
 class ScaffoldTests(unittest.TestCase):
@@ -81,7 +71,7 @@ class SafetyAuditTests(unittest.TestCase):
 
 class CatalogTests(unittest.TestCase):
     def test_repository_passes_publication_gate(self):
-        self.assertEqual([], validate_catalog.validate_repository(None))
+        self.assertEqual([], validate_catalog.validate_repository())
 
     def test_generated_catalog_is_current_and_contains_routing_metadata(self):
         self.assertEqual([], validate_catalog.generated_file_errors())
@@ -105,6 +95,12 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(1, readme.count(validate_catalog.README_TABLE_BEGIN))
         self.assertEqual(1, readme.count(validate_catalog.README_TABLE_END))
         self.assertEqual(readme, validate_catalog.replace_generated_readme_table(readme))
+
+    def test_catalog_contains_renamed_and_new_skills(self):
+        names = {item["name"] for item in validate_catalog.catalog_data()["skills"]}
+        self.assertIn("image-gallery", names)
+        self.assertIn("business-trip", names)
+        self.assertNotIn("gallery", names)
 
     def test_rejects_missing_catalog_skill(self):
         with tempfile.TemporaryDirectory(dir=ROOT / "tests") as directory:
@@ -135,11 +131,42 @@ class CatalogTests(unittest.TestCase):
             self.assertTrue(any("`catalog:available`" in error for error in errors))
 
 
-class PullRequestPreflightTests(unittest.TestCase):
+class EventRecapAggregationTests(unittest.TestCase):
+    def test_loads_csv_and_normalizes_boolean_values(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "attendees.csv"
+            path.write_text(
+                "Status,Company,Role\n参加,Example株式会社,Speaker\n欠席,Sample合同会社,Guest\n",
+                encoding="utf-8",
+            )
+            rows = aggregate_records.load_records(str(path))
+            args = type("Args", (), {
+                "attend_field": "Status",
+                "choice_fields": ["Role"],
+                "bool_fields": [],
+                "company_field": "Company",
+            })()
+            result = aggregate_records.aggregate(rows, args)
+            self.assertEqual(2, result["total_records"])
+            self.assertEqual(1, result["attending"])
+            self.assertEqual(1, result["not_attending"])
+
+
+class SkillPackagingTests(unittest.TestCase):
+    def test_package_places_skill_file_at_archive_root(self):
+        with tempfile.TemporaryDirectory() as directory:
+            archive = package_skills.package(
+                ROOT / "skills" / "business-trip", Path(directory)
+            )
+            with zipfile.ZipFile(archive) as packaged:
+                names = packaged.namelist()
+            self.assertIn("SKILL.md", names)
+            self.assertIn("references/troubleshooting.md", names)
+            self.assertFalse(any(name.startswith("business-trip/") for name in names))
+
+class PublicationPreflightTests(unittest.TestCase):
     def test_rejects_private_and_generated_files(self):
         forbidden = {
-            "config/placeholders.json",
-            "config/publication-denylist.txt",
             ".env",
             ".env.local",
             "build/skills/sample/SKILL.md",
@@ -153,8 +180,6 @@ class PullRequestPreflightTests(unittest.TestCase):
 
     def test_allows_public_templates(self):
         allowed = {
-            "config/placeholders.example.json",
-            "config/publication-denylist.example.txt",
             "skills/skill-build/references/.env.example",
         }
         for path in allowed:

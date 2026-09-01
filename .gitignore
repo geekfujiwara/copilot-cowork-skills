@@ -1,6 +1,3 @@
-# 個人設定（実値）
-config/placeholders.json
-config/publication-denylist.txt
 .env
 .env.*
 !*.env.example
@@ -9,7 +6,7 @@ config/publication-denylist.txt
 __pycache__/
 *.pyc
 *.zip
-build/
 output/
+dist/
 working/
 .DS_Store
