@@ -1,0 +1,33 @@
+name: Bug report
+description: 秘密情報を含まない不具合を報告する
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "秘密情報、個人情報、顧客データは記載しないでください。セキュリティ問題は Security Advisory から報告してください。"
+  - type: input
+    id: skill
+    attributes:
+      label: 対象スキル
+      placeholder: daily-digest
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: 現象
+      description: 再現に必要な最小限の情報を、実データを匿名化して記載してください。
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待する動作
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: 検証結果
+      description: validate_catalog.py の結果を記載してください。秘密情報は削除してください。

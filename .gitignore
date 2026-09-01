@@ -1,0 +1,15 @@
+# 個人設定（実値）
+config/placeholders.json
+config/publication-denylist.txt
+.env
+.env.*
+!*.env.example
+
+# 生成物・キャッシュ
+__pycache__/
+*.pyc
+*.zip
+build/
+output/
+working/
+.DS_Store

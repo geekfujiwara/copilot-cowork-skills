@@ -1,0 +1,20 @@
+{
+  "_comment": "このファイルを placeholders.json にコピーして、自分の値を記入してください。placeholders.json は .gitignore 済みです。",
+
+  "USER_NAME":        "Your Name",
+  "USER_EMAIL":       "you@example.com",
+  "USER_OBJECT_ID":   "00000000-0000-0000-0000-000000000000",
+  "MANAGER_NAME":     "Manager Name",
+  "COMPANY_DOMAIN":   "example.com",
+  "ORG_NAME":         "Your Organization",
+  "USER_ROLE":        "Your Role",
+  "TECH_FOCUS":       "AI and cloud",
+
+  "_location_comment": "travel-fare で使う交通費算出の起点・目的地",
+  "HOME_STATION":     "最寄り駅",
+  "OFFICE_STATION":   "オフィス最寄り駅",
+  "OFFICE_CODE":      "OFFICE",
+
+  "_sharepoint_comment": "event-recap で参加者リストを読む SharePoint のホスト名",
+  "SHAREPOINT_HOST":  "contoso.sharepoint.com"
+}
