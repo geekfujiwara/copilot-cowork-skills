@@ -10,3 +10,6 @@ output/
 dist/
 working/
 .DS_Store
+catalog/
+tests/
+tools/
