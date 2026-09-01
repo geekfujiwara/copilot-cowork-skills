@@ -1,0 +1,24 @@
+{
+  "title": "Account Plan",
+  "period": "<period>",
+  "currency": "<currency>",
+  "total_budget": 0,
+  "goals": [
+    {"name": "<goal>", "account": "<account>", "offering": "<offering>", "status": "proposed"}
+  ],
+  "kpis": [
+    {"name": "<kpi>", "baseline": "<unknown>", "target": "<target>", "due": "<date>", "source": "<source>", "confidence": "medium"}
+  ],
+  "allocations": [
+    {"account": "<account>", "offering": "<offering>", "amount": 0, "status": "proposed", "rationale": "<reason>"}
+  ],
+  "steps": [
+    {"name": "<step>", "account": "<account>", "offering": "<offering>", "owner_role": "<role>", "due": "<date>", "budget": 0, "status": "planned"}
+  ],
+  "risks": [
+    {"name": "<risk>", "impact": "medium", "mitigation": "<mitigation>"}
+  ],
+  "sources": [
+    {"type": "policy", "title": "<document>", "updated": "<date>", "url": "https://example.com/"}
+  ]
+}

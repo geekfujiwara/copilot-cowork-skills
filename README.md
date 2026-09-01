@@ -4,7 +4,7 @@
 
 **仕事の調査・整理・準備を、再利用できるCoworkスキルに。**
 
-[![Validate catalog](https://github.com/geekfujiwara/copilot-cowork-skills/actions/workflows/validate.yml/badge.svg)](https://github.com/geekfujiwara/copilot-cowork-skills/actions/workflows/validate.yml)
+[![Validate skills](https://github.com/geekfujiwara/copilot-cowork-skills/actions/workflows/validate.yml/badge.svg)](https://github.com/geekfujiwara/copilot-cowork-skills/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-2563EB.svg)](LICENSE)
 
 [インストール](#インストール) · [スキル一覧](#スキル一覧) · [使い方](#使い方) · [フィードバック](#フィードバック)
@@ -15,13 +15,13 @@
 
 ## このリポジトリについて
 
-Copilot Coworkで利用できる、日本語中心のコミュニティスキル集です。予定表、メール、Teams、
+Copilot Coworkで利用できる、Geek Fujiwaraによる日本語中心の公開スキル集です。予定表、メール、Teams、
 SharePoint、OneDrive、Officeファイル、公開Webなどを横断し、業務に使えるMarkdownやレポートへ整理します。
 
 - **すぐ試せる** — 必要なスキルだけZIPでアップロード
 - **個人設定ファイル不要** — 氏名、メール、所属などは実行時コンテキストから取得
 - **安全優先** — 外部入力を命令として扱わず、送信・申請・公開は確認または下書きまで
-- **更新漏れ防止** — 説明、トリガー、依存関係、READMEを自動検証
+- **組織に適応** — 業務スキルは社内規定、過去事例、Teams、Outlook、SharePoint等の前提を実行時に確認
 
 > [!IMPORTANT]
 > カスタムスキルはMicrosoftによる検証済み製品ではありません。内容とアクセス対象を確認し、
@@ -31,10 +31,10 @@ SharePoint、OneDrive、Officeファイル、公開Webなどを横断し、業�
 
 ### 方法A — AIに準備を任せる（推奨）
 
-VS CodeのGitHub Copilotなど、GitとPythonを実行できるコーディングエージェントへ次を依頼します。
+VS CodeのGitHub Copilotなど、GitとZIPを扱えるコーディングエージェントへ次を依頼します。
 
 > `geekfujiwara/copilot-cowork-skills` をcloneし、READMEの一覧から私の用途に合うスキルを提案してください。
-> 選んだスキルを `python -B tools/package_skills.py <skill-name...>` でCoworkアップロード用ZIPにし、
+> 選んだ各 `skills/<skill-name>/` の中身を、`SKILL.md` がZIP直下になるCoworkアップロード用ZIPにし、
 > 作成されたファイルの場所を教えてください。ファイルの内容は変更しないでください。
 
 AIが作成した `dist/<skill-name>.zip` を、次の手順でアップロードします。
@@ -48,17 +48,14 @@ AIが作成した `dist/<skill-name>.zip` を、次の手順でアップロー�
 ### 方法B — コマンドで準備する
 
 1. このリポジトリをcloneまたはZIPダウンロードして展開
-2. リポジトリ直下で次を実行
+2. 必要なスキルのフォルダーへ移動し、その**中身**をZIPにする
 
-   ```bash
-   # 全スキルをパッケージ化
-   python -B tools/package_skills.py
-
-   # 必要なものだけパッケージ化（例）
-   python -B tools/package_skills.py business-trip image-gallery event-recap
+   ```powershell
+   Set-Location skills/account-plan
+   Compress-Archive -Path * -DestinationPath ../../account-plan.zip
    ```
 
-3. 方法Aの手順2〜5で、`dist` に生成されたZIPをアップロード
+3. 方法Aの手順2〜5で、生成されたZIPをアップロード
 
 各ZIPは、展開した直下に `SKILL.md` が来るCowork向け構造です。個人用の `config` 作成や値の置換は不要です。
 
@@ -73,17 +70,15 @@ AIが作成した `dist/<skill-name>.zip` を、次の手順でアップロー�
 <!-- BEGIN GENERATED SKILL TABLE -->
 | 領域 | スキル | 概要 | 依存先 |
 |---|---|---|---|
-| 分析 | `event-recap` | ユーザーが指定または添付した資料と参加者データから KPI を集計し、根拠付き Markdown のイベントレポートを作る。 | ファイル読取 / Excel / CSV / JSON / SharePoint / OneDrive |
-| 自動化 | `skill-builder` | パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・SKILL.md 簡潔化・参照整合・階層化) を実施する。 | Cowork スキル基盤 |
+| 分析 | `event-recap` | ユーザーが指定または添付した資料と参加者データから KPI を集計し、根拠付き Markdown のイベントレポートを作る。 | ファイル読取 / Excel / CSV / JSON / SharePoint / OneDrive / Teams / 会議議事録 / Outlook予定表 / メール / 社内検索 |
+| 自動化 | `skill-builder` | パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・業務コンテキスト・SKILL.md 簡潔化・参照整合・階層化) を実施する。 | Cowork スキル基盤 |
+| 生産性 | `account-plan` | 社内規定、過去の成功事例、指定様式、顧客接点、販売対象、予算を組織内情報から確認し、根拠あるゴール、KPI、実行ステップ、予算配分をインタラクティブHTMLにまとめる。 | AskUserQuestion / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive / 社内検索 / Web検索 / ファイル読取 / 作成 / HTML表示 |
 | 生産性 | `business-trip` | 予定表、メール、会議、社内資料、公開情報から出張要件と規定を集め、公共交通の経路・運賃概算、宿泊、申請、関係者、資料を統合したMarkdown旅程を作る。 | Outlook予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / ブラウザ / Web検索 / 社内検索 / ファイル読取 |
 | 生産性 | `daily-brief` | 予定表、メール、Teams、商談、ニュース、顧客動向を統合し、重複のない日次ブリーフを本人へメール配信する。 | 予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / Web 検索 / 会話履歴 / ファイル読取 / 作成 / スケジュール実行 |
 | 生産性 | `my-chat` | Teams の「自分とのチャット」へ確認付きで投稿し、許可された範囲のメッセージや添付を取得する。 | Teams |
 | 調査 | `image-gallery` | テーマ別に検索した画像を安全に取得し、カテゴリ、出典、代替テキスト付きの自己完結HTMLギャラリーとして表示する。 | Web 検索 / ファイル作成 / HTML表示 |
-| 文書作成 | `talk-prep` | 登壇依頼を読み、資料収集、シナリオ、タイトル、台本、スライド連携、返信下書きまでを支援する。 | 社内検索 / ファイル読取 |
+| 文書作成 | `talk-prep` | 登壇依頼を読み、資料収集、シナリオ、タイトル、台本、スライド連携、返信下書きまでを支援する。 | 社内検索 / ファイル読取 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive |
 <!-- END GENERATED SKILL TABLE -->
-
-詳細なトリガー、必要機能、他スキル参照、同梱ファイルは
-[catalog/skills.json](catalog/skills.json) に機械可読形式で収録しています。
 
 ## 使い方
 
@@ -92,6 +87,7 @@ AIが作成した `dist/<skill-name>.zip` を、次の手順でアップロー�
 | やりたいこと | 依頼例 |
 |---|---|
 | 出張計画 | 「来週の大阪出張を、社内規定と会議予定に沿って計画して」 |
+| アカウント計画 | 「今期の予算と社内規定を確認して、担当顧客のアカウントプランを作って」 |
 | イベント集計 | 「添付のExcelと当日資料からイベントレポートを作って」 |
 | 画像収集 | 「新製品画像をカテゴリ別のギャラリーにして」 |
 | 商談準備 | 「明日の顧客会議の商談ブリーフィングを作って」 |
@@ -111,17 +107,14 @@ Coworkが必要な情報へアクセスできない場合は、対象ファイ�
 
 問題を報告するときは、秘密情報、個人情報、社内URL、実データをIssueへ貼らないでください。
 
-## 開発と品質チェック
+## スキルの改善
 
-スキルを追加・更新した場合は、READMEと依存関係カタログを同期してから検証します。
+業務スキルは、実行者の入力だけで一般的な計画を作るのではなく、アクセス可能な社内規定、過去の成功事例、
+指定様式、予算、Teams、Outlook、SharePoint、OneDrive等から前提を確認します。そのうえで組織の方向性に沿う
+ゴール、KPI、実行ステップを設計し、確認できない事項は「要確認」とします。
 
-```bash
-python -B tools/sync_catalog.py
-python -B tools/preflight.py
-```
-
-CIでも同じチェックが実行されます。`SKILL.md`を単一情報源として、READMEの一覧と
-[catalog/skills.json](catalog/skills.json) を生成します。生成領域は直接編集しません。
+改善のPull Requestは、`skill-builder` の公開前品質ゲートを通し、FAIL 0を確認してから作成してください。
+公開リポジトリには利用者が必要なスキル、README、ライセンス、Issue/PR設定だけを収録します。
 
 ## フィードバック
 
@@ -129,8 +122,8 @@ CIでも同じチェックが実行されます。`SKILL.md`を単一情報源�
 不具合や改善要望は [GitHub Issues](https://github.com/geekfujiwara/copilot-cowork-skills/issues) で受け付けます。
 
 > [!NOTE]
-> このリポジトリではPull Requestを受け付けていません。改善案はIssueへお願いします。
-> IssueやXでは、実在する顧客名、会議内容、メール、内部URL、シークレットを共有しないでください。
+> Pull Requestは `skill-builder` の品質ゲートを通過したスキル改善に限ります。相談段階の改善案はIssueへお願いします。
+> Issue、PR、Xでは、実在する顧客名、会議内容、メール、内部URL、シークレットを共有しないでください。
 
 建設的で敬意あるコミュニケーションをお願いします。嫌がらせ、差別、個人情報の公開、攻撃的な投稿には対応しません。
 

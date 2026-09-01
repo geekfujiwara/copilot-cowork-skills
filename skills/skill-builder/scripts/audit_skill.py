@@ -299,6 +299,40 @@ def check_safety(texts):
 
 
 # --------------------------------------------------------------------------
+def check_business_context(texts):
+    """計画・分析系の業務スキルが組織の前提を取得することを確認する。"""
+    body = texts.get("SKILL.md", "")
+    category = re.search(r"^category:\s*([a-z-]+)\s*$", body, re.MULTILINE)
+    category = category.group(1) if category else ""
+    business_task = re.search(
+        r"計画|プラン|KPI|レポート|ブリーフ|旅程|登壇|集計|planning|briefing",
+        body,
+        re.IGNORECASE,
+    )
+    if category not in {"productivity", "analysis", "writing"} or not business_task:
+        return [_result("context/business", "PASS", "組織判断を伴う業務スキルの対象外")]
+
+    organization_context = re.search(
+        r"社内規定|組織.*(?:規定|方向|優先|目標)|SharePoint|Teams|Outlook|過去.*(?:事例|実績|計画|登壇|出張)",
+        body,
+        re.IGNORECASE | re.DOTALL,
+    )
+    missing_context = re.search(
+        r"AskUserQuestion|不足.{0,30}確認|見つからな.{0,30}(?:推測せず|要確認)|取得できな.{0,30}(?:確認|推測せず)",
+        body,
+        re.IGNORECASE | re.DOTALL,
+    )
+    missing = []
+    if not organization_context:
+        missing.append("規定・過去事例・Teams/Outlook/SharePoint等の組織内調査")
+    if not missing_context:
+        missing.append("取得できない重要前提の確認または要確認分岐")
+    if missing:
+        return [_result("context/business", "FAIL", " / ".join(missing) + " がありません")]
+    return [_result("context/business", "PASS", "組織内コンテキストと不足前提の確認を確認")]
+
+
+# --------------------------------------------------------------------------
 def audit(root, tenant_terms=(), max_skill=5000, max_desc=300):
     texts = read_texts(root)
     results = []
@@ -308,6 +342,7 @@ def audit(root, tenant_terms=(), max_skill=5000, max_desc=300):
     results += check_layout(root)
     results += check_assets(root)
     results += check_safety(texts)
+    results += check_business_context(texts)
     return results
 
 
