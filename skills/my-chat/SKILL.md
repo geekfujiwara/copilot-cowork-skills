@@ -1,5 +1,5 @@
 ---
-name: self-note
+name: my-chat
 category: productivity
 triggers:
    - 自分用メモに送って
@@ -15,7 +15,7 @@ cowork:
    icon: Notepad
 ---
 
-# self-note — 自分とのチャット（Teams Notes / 48:notes）
+# my-chat — 自分とのチャット（Teams Notes / 48:notes）
 
 「自分とのチャット＝Teams の自分用メモ（Chat with yourself）」を、**読み書き両方**扱うスキル。
 

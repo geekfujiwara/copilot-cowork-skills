@@ -10,7 +10,7 @@ body:
     id: skill
     attributes:
       label: 対象スキル
-      placeholder: daily-digest
+      placeholder: daily-brief
     validations:
       required: true
   - type: textarea

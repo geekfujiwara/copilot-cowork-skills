@@ -80,18 +80,15 @@ class CatalogTests(unittest.TestCase):
     def test_generated_catalog_is_current_and_contains_routing_metadata(self):
         self.assertEqual([], validate_catalog.generated_file_errors())
         catalog = json.loads(validate_catalog.render_catalog_json())
-        deal_brief = next(
-            item for item in catalog["skills"] if item["name"] == "deal-brief"
+        daily_brief = next(
+            item for item in catalog["skills"] if item["name"] == "daily-brief"
         )
-        self.assertIn("deal briefing", deal_brief["triggers"])
-        self.assertIn("予定表", deal_brief["dependencies"]["capabilities"])
-        self.assertEqual(
-            ["client-digest", "daily-digest", "digest-news"],
-            deal_brief["dependencies"]["skills"],
-        )
+        self.assertIn("daily briefing email", daily_brief["triggers"])
+        self.assertIn("予定表", daily_brief["dependencies"]["capabilities"])
+        self.assertEqual([], daily_brief["dependencies"]["skills"])
         self.assertIn(
-            "references/troubleshooting.md",
-            deal_brief["dependencies"]["components"],
+            "references/digest-news.md",
+            daily_brief["dependencies"]["components"],
         )
 
     def test_readme_generated_table_has_exactly_one_marker_pair(self):
@@ -104,12 +101,43 @@ class CatalogTests(unittest.TestCase):
         names = {item["name"] for item in validate_catalog.catalog_data()["skills"]}
         self.assertIn("image-gallery", names)
         self.assertIn("business-trip", names)
-        self.assertIn("digest-news", names)
         self.assertIn("skill-builder", names)
+        self.assertIn("daily-brief", names)
+        self.assertIn("my-chat", names)
         self.assertNotIn("ai-digest", names)
         self.assertNotIn("skill-build", names)
         self.assertNotIn("gallery", names)
         self.assertNotIn("travel-fare", names)
+        self.assertNotIn("daily-digest", names)
+        self.assertNotIn("deal-brief", names)
+        self.assertNotIn("digest-news", names)
+        self.assertNotIn("client-digest", names)
+        self.assertNotIn("self-note", names)
+
+    def test_daily_brief_preserves_scheduled_delivery_contract(self):
+        skill = (ROOT / "skills" / "daily-brief" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        for required in (
+            "月曜から金曜",
+            "新しい会話を作らず",
+            "output/daily-brief-history.md",
+            "一致したニュースは再配信しない",
+            "成功後に限り",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, skill)
+
+        for reference in (
+            "daily-overview.md",
+            "deal-brief.md",
+            "digest-news.md",
+            "client-digest.md",
+        ):
+            with self.subTest(reference=reference):
+                self.assertTrue(
+                    (ROOT / "skills" / "daily-brief" / "references" / reference).is_file()
+                )
 
     def test_rejects_missing_catalog_skill(self):
         with tempfile.TemporaryDirectory(dir=ROOT / "tests") as directory:

@@ -32,90 +32,36 @@
       }
     },
     {
-      "name": "client-digest",
-      "category": "research",
-      "description": "直近の打ち合わせから顧客企業を抽出し、公開情報から AI、業務変革、投資動向を調査して週次レポートを作る。 単一企業の深掘り、社内業績レポート、日次ブリーフィングには使用しない。",
-      "triggers": [
-        "顧客調査レポートを作って",
-        "今週の顧客リサーチ",
-        "weekly customer intelligence"
-      ],
-      "dependencies": {
-        "capabilities": [
-          "予定表",
-          "メール",
-          "Web 検索"
-        ],
-        "skills": [
-          "daily-digest"
-        ],
-        "components": [
-          "references/troubleshooting.md"
-        ]
-      }
-    },
-    {
-      "name": "daily-digest",
+      "name": "daily-brief",
       "category": "productivity",
-      "description": "カレンダー、メール、Teams、文書から本人向けの日次ブリーフィングを作成し、承認後に HTML メールで送信する。 画面表示だけの概要、他人向けの状況共有、単一会議の詳細要約には使用しない。",
+      "description": "予定表、メール、Teams、商談、ニュース、顧客動向を統合し、重複のない日次ブリーフを本人へメール配信する。 平日のスケジュール実行では既存会話と単一Markdown台帳を継続利用し、配信済みニュースを再送しない。",
       "triggers": [
         "毎日のブリーフィングをメールで送って",
         "今日のブリーフィングを自分宛に送信",
-        "daily briefing email"
-      ],
-      "dependencies": {
-        "capabilities": [
-          "予定表",
-          "メール",
-          "Teams"
-        ],
-        "skills": [],
-        "components": [
-          "references/troubleshooting.md"
-        ]
-      }
-    },
-    {
-      "name": "deal-brief",
-      "category": "productivity",
-      "description": "カレンダー、メール、Teams、SharePoint の関連情報を統合し、指定商談の事前ブリーフィングを Markdown で作る。 会議後の議事録、日次概要、日程調整、顧客企業の週次調査には使用しない。",
-      "triggers": [
+        "daily briefing email",
+        "平日に重複しない日次ダイジェストを配信して",
+        "商談とニュースと顧客動向をまとめて",
         "商談ブリーフィングを作って",
-        "顧客打ち合わせの事前準備をして",
-        "deal briefing"
+        "AIニュースを検索してサマリーを作って",
+        "顧客調査レポートを作って"
       ],
       "dependencies": {
         "capabilities": [
           "予定表",
           "メール",
-          "Teams",
-          "議事録"
-        ],
-        "skills": [
-          "client-digest",
-          "daily-digest",
-          "digest-news"
-        ],
-        "components": [
-          "references/troubleshooting.md"
-        ]
-      }
-    },
-    {
-      "name": "digest-news",
-      "category": "research",
-      "description": "公開 Web から AI・クラウド・業界ニュースを調査し、利用者向けの要約と任意の自己完結 HTML 論点マップを作る。 社内データだけの要約、学術的な網羅調査、Office 文書の作成には使用しない。",
-      "triggers": [
-        "AIニュースを検索してサマリーを作って",
-        "最新動向をエグゼクティブサマリーで",
-        "AI news executive summary"
-      ],
-      "dependencies": {
-        "capabilities": [
-          "Web 検索"
+          "Teams / 会議議事録",
+          "SharePoint / OneDrive",
+          "Web 検索",
+          "会話履歴",
+          "ファイル読取 / 作成",
+          "スケジュール実行"
         ],
         "skills": [],
         "components": [
+          "references/client-digest.md",
+          "references/daily-overview.md",
+          "references/deal-brief.md",
+          "references/digest-news.md",
           "references/troubleshooting.md"
         ]
       }
@@ -171,7 +117,7 @@
       }
     },
     {
-      "name": "self-note",
+      "name": "my-chat",
       "category": "productivity",
       "description": "Teams の「自分とのチャット」へ確認付きで投稿し、許可された範囲のメッセージや添付を取得する。 他人とのチャット、会議チャット、メール、カレンダー操作には使用しない。",
       "triggers": [
