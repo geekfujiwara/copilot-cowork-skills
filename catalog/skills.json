@@ -2,25 +2,6 @@
   "schema_version": 1,
   "skills": [
     {
-      "name": "ai-digest",
-      "category": "research",
-      "description": "公開 Web から AI・クラウド・業界ニュースを調査し、利用者向けの要約と任意の自己完結 HTML 論点マップを作る。 社内データだけの要約、学術的な網羅調査、Office 文書の作成には使用しない。",
-      "triggers": [
-        "AIニュースを検索してサマリーを作って",
-        "最新動向をエグゼクティブサマリーで",
-        "AI news executive summary"
-      ],
-      "dependencies": {
-        "capabilities": [
-          "Web 検索"
-        ],
-        "skills": [],
-        "components": [
-          "references/troubleshooting.md"
-        ]
-      }
-    },
-    {
       "name": "business-trip",
       "category": "productivity",
       "description": "予定表、メール、会議、社内資料、公開情報から出張要件と規定を集め、移動・宿泊・申請・関係者・資料を統合したMarkdown旅程を作る。 私的旅行、予約・購入・申請の自動実行、規定を確認できない経費判断には使用しない。",
@@ -109,10 +90,29 @@
           "議事録"
         ],
         "skills": [
-          "ai-digest",
           "client-digest",
-          "daily-digest"
+          "daily-digest",
+          "digest-news"
         ],
+        "components": [
+          "references/troubleshooting.md"
+        ]
+      }
+    },
+    {
+      "name": "digest-news",
+      "category": "research",
+      "description": "公開 Web から AI・クラウド・業界ニュースを調査し、利用者向けの要約と任意の自己完結 HTML 論点マップを作る。 社内データだけの要約、学術的な網羅調査、Office 文書の作成には使用しない。",
+      "triggers": [
+        "AIニュースを検索してサマリーを作って",
+        "最新動向をエグゼクティブサマリーで",
+        "AI news executive summary"
+      ],
+      "dependencies": {
+        "capabilities": [
+          "Web 検索"
+        ],
+        "skills": [],
         "components": [
           "references/troubleshooting.md"
         ]

@@ -82,7 +82,7 @@ class CatalogTests(unittest.TestCase):
         self.assertIn("deal briefing", deal_brief["triggers"])
         self.assertIn("予定表", deal_brief["dependencies"]["capabilities"])
         self.assertEqual(
-            ["ai-digest", "client-digest", "daily-digest"],
+            ["client-digest", "daily-digest", "digest-news"],
             deal_brief["dependencies"]["skills"],
         )
         self.assertIn(
@@ -100,6 +100,8 @@ class CatalogTests(unittest.TestCase):
         names = {item["name"] for item in validate_catalog.catalog_data()["skills"]}
         self.assertIn("image-gallery", names)
         self.assertIn("business-trip", names)
+        self.assertIn("digest-news", names)
+        self.assertNotIn("ai-digest", names)
         self.assertNotIn("gallery", names)
 
     def test_rejects_missing_catalog_skill(self):

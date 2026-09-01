@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parents[1]
 SKILLS = ROOT / "skills"
 REQUIRED_ROOT_FILES = {
-    "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "catalog/skills.json",
+    "README.md", "LICENSE", "catalog/skills.json",
 }
 ALLOWED_CATEGORIES = {
     "productivity", "communication", "analysis", "writing", "research",

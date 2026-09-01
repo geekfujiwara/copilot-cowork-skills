@@ -1,5 +1,5 @@
 ---
-name: ai-digest
+name: digest-news
 category: research
 triggers:
   - AIニュースを検索してサマリーを作って
@@ -15,7 +15,7 @@ cowork:
   icon: NewsRegular
 ---
 
-# AIニュース → エグゼクティブサマリー → 論点マップ（1枚HTML）
+# News Digest — エグゼクティブサマリーと論点マップ
 
 ## 目的
 

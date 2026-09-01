@@ -29,7 +29,7 @@ cowork:
 - 1日の予定全般の俯瞰（朝のブリーフィング） → `catalog:daily-digest`
 - 会議のスケジュール調整や参加可否確認 → カレンダー管理機能
 - 顧客企業の定例週次調査 → `catalog:client-digest`
-- 業界アップデート全般 → `catalog:ai-digest`
+- 業界アップデート全般 → `catalog:digest-news`
 
 ## 入力の受け取り方
 
@@ -135,7 +135,7 @@ cowork:
 - 「今日の予定を教えて」（→ `catalog:daily-digest`）
 - 「来週の会議スケジュール調整して」（→ カレンダー管理機能）
 - 「<顧客名> の最近の動向調べて」（→ `catalog:client-digest`）
-- 「今週のアップデート教えて」（→ `catalog:ai-digest`）
+- 「今週のアップデート教えて」（→ `catalog:digest-news`）
 
 ## Guardrails
 

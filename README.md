@@ -77,11 +77,11 @@ AIが作成した `dist/<skill-name>.zip` を、次の手順でアップロー�
 | 自動化 | `skill-build` | パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・SKILL.md 簡潔化・参照整合・階層化) を実施する。 | Cowork スキル基盤 |
 | 生産性 | `business-trip` | 予定表、メール、会議、社内資料、公開情報から出張要件と規定を集め、移動・宿泊・申請・関係者・資料を統合したMarkdown旅程を作る。 | Outlook予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / Web検索 / 社内検索 / ファイル読取 / `catalog:travel-fare` |
 | 生産性 | `daily-digest` | カレンダー、メール、Teams、文書から本人向けの日次ブリーフィングを作成し、承認後に HTML メールで送信する。 | 予定表 / メール / Teams |
-| 生産性 | `deal-brief` | カレンダー、メール、Teams、SharePoint の関連情報を統合し、指定商談の事前ブリーフィングを Markdown で作る。 | 予定表 / メール / Teams / 議事録 / `catalog:ai-digest` / `catalog:client-digest` / `catalog:daily-digest` |
+| 生産性 | `deal-brief` | カレンダー、メール、Teams、SharePoint の関連情報を統合し、指定商談の事前ブリーフィングを Markdown で作る。 | 予定表 / メール / Teams / 議事録 / `catalog:client-digest` / `catalog:daily-digest` / `catalog:digest-news` |
 | 生産性 | `self-note` | Teams の「自分とのチャット」へ確認付きで投稿し、許可された範囲のメッセージや添付を取得する。 | Teams |
 | 生産性 | `travel-fare` | 公共交通機関の経路検索から片道・往復運賃、所要時間、乗換を概算し、取得元と確度を示す。 | ブラウザ / Web 検索 |
-| 調査 | `ai-digest` | 公開 Web から AI・クラウド・業界ニュースを調査し、利用者向けの要約と任意の自己完結 HTML 論点マップを作る。 | Web 検索 |
 | 調査 | `client-digest` | 直近の打ち合わせから顧客企業を抽出し、公開情報から AI、業務変革、投資動向を調査して週次レポートを作る。 | 予定表 / メール / Web 検索 / `catalog:daily-digest` |
+| 調査 | `digest-news` | 公開 Web から AI・クラウド・業界ニュースを調査し、利用者向けの要約と任意の自己完結 HTML 論点マップを作る。 | Web 検索 |
 | 調査 | `image-gallery` | テーマを複数カテゴリに分け、検索画像をカテゴリ別タブの Adaptive Card ギャラリーとして表示する。 | Web 検索 |
 | 文書作成 | `talk-prep` | 登壇依頼を読み、資料収集、シナリオ、タイトル、台本、スライド連携、返信下書きまでを支援する。 | 社内検索 / ファイル読取 |
 <!-- END GENERATED SKILL TABLE -->
@@ -141,7 +141,6 @@ CIでも同じチェックが実行されます。`SKILL.md`を単一情報源�
 ## ライセンス
 
 コードと文書は [MIT License](LICENSE) で公開しています。外部サービスや第三者素材には、それぞれの利用条件が適用されます。
-詳しくは [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) を確認してください。
 
 ---
 
