@@ -21,6 +21,7 @@ def load_module(name: str, path: Path):
 
 apply_placeholders = load_module("apply_placeholders", ROOT / "tools" / "apply_placeholders.py")
 validate_catalog = load_module("validate_catalog", ROOT / "tools" / "validate_catalog.py")
+preflight = load_module("preflight", ROOT / "tools" / "preflight.py")
 audit_skill = load_module(
     "audit_skill", ROOT / "skills" / "skill-build" / "scripts" / "audit_skill.py"
 )
@@ -98,6 +99,33 @@ class CatalogTests(unittest.TestCase):
             (skill / "SKILL.md").write_text("Use `available`.", encoding="utf-8")
             errors = validate_catalog.validate_references(skill, {"sample", "available"})
             self.assertTrue(any("`catalog:available`" in error for error in errors))
+
+
+class PullRequestPreflightTests(unittest.TestCase):
+    def test_rejects_private_and_generated_files(self):
+        forbidden = {
+            "config/placeholders.json",
+            "config/publication-denylist.txt",
+            ".env",
+            ".env.local",
+            "build/skills/sample/SKILL.md",
+            "output/report.html",
+            "archive.zip",
+            "tools/__pycache__/tool.pyc",
+        }
+        for path in forbidden:
+            with self.subTest(path=path):
+                self.assertIsNotNone(preflight.forbidden_reason(path))
+
+    def test_allows_public_templates(self):
+        allowed = {
+            "config/placeholders.example.json",
+            "config/publication-denylist.example.txt",
+            "skills/skill-build/references/.env.example",
+        }
+        for path in allowed:
+            with self.subTest(path=path):
+                self.assertIsNone(preflight.forbidden_reason(path))
 
 
 if __name__ == "__main__":

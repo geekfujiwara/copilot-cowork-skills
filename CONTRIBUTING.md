@@ -9,7 +9,8 @@ Issue と Pull Request を歓迎します。公開可能な最小差分にし、
 3. 詳細説明と異常系は `references/`、再利用する処理は `scripts/` に分離します。
 4. 環境依存値は `{{PLACEHOLDER}}` に置換し、必要なら `config/placeholders.example.json` に説明付きで追加します。実値は追加しません。
 5. スキル一覧を README に追加します。
-6. `python tools/validate_catalog.py` と `python -B -m unittest discover -s tests -v` を実行します。
+6. 変更を作業ブランチへコミットします。
+7. `python -B tools/create_pull_request.py --title "<タイトル>" --body "<説明>"` で PR を登録します。
 
 ## 参照規約
 
@@ -44,3 +45,14 @@ Issue と Pull Request を歓迎します。公開可能な最小差分にし、
 ## Pull Request
 
 目的、変更範囲、検証結果、データアクセスや外部作用の変更有無を本文に記載してください。関連する未解決 Pull Request がある場合は、新規作成より既存 Pull Request の更新を優先します。
+
+`create_pull_request.py` は、次をすべて通過した場合だけブランチを push して `gh pr create` を実行します。
+
+1. 実値設定、`.env`、ZIP、生成物、キャッシュ、1 MiB 超のファイルが Git 管理対象にない
+2. `git diff --check` が成功する
+3. カタログの構造、秘匿化、安全性、参照整合が成功する
+4. 回帰テストが成功する
+5. 10 件すべてのスキル監査が `FAIL 0 / WARN 0` になる
+6. main 以外のブランチで、未コミット変更がなく、同一ブランチの未完了 PR がない
+
+いずれかが失敗した場合、push と PR 登録は行われません。GitHub 側でも同じ `preflight.py` を実行します。

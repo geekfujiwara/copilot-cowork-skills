@@ -100,6 +100,7 @@ python -B -m unittest discover -s tests -v
 ## コントリビューション
 
 スキルの構造、秘匿化、検証、Pull Request の要件は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
+PR は `python -B tools/create_pull_request.py` から登録すると、全品質ゲートの成功前には登録されません。
 
 ## ライセンスと注意
 

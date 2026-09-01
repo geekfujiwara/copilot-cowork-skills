@@ -12,6 +12,7 @@
 
 - [ ] 実在する個人名、会社名、顧客名、案件名、メール、GUID、内部 URL、シークレットを含まない
 - [ ] 同梱物を再配布する権利がある
-- [ ] `python tools/validate_catalog.py` が成功した
-- [ ] `python -B -m unittest discover -s tests -v` が成功した
+- [ ] `python -B tools/preflight.py --base origin/main` が成功した
 - [ ] 発見した問題の再発防止チェックを追加した
+
+PR は原則として `python -B tools/create_pull_request.py` から登録し、事前検証を省略しないでください。
