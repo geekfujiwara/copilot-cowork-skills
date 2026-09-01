@@ -71,6 +71,34 @@ class CatalogTests(unittest.TestCase):
     def test_repository_passes_publication_gate(self):
         self.assertEqual([], validate_catalog.validate_repository(None))
 
+    def test_rejects_missing_catalog_skill(self):
+        with tempfile.TemporaryDirectory(dir=ROOT / "tests") as directory:
+            skill = Path(directory) / "sample"
+            skill.mkdir()
+            (skill / "SKILL.md").write_text(
+                "Use `catalog:not-installed` for this request.", encoding="utf-8"
+            )
+            errors = validate_catalog.validate_references(skill, {"sample", "available"})
+            self.assertTrue(any("未解決のカタログスキル参照" in error for error in errors))
+
+    def test_rejects_missing_component(self):
+        with tempfile.TemporaryDirectory(dir=ROOT / "tests") as directory:
+            skill = Path(directory) / "sample"
+            skill.mkdir()
+            (skill / "SKILL.md").write_text(
+                "See `references/missing.md`.", encoding="utf-8"
+            )
+            errors = validate_catalog.validate_references(skill, {"sample"})
+            self.assertTrue(any("同梱コンポーネント参照" in error for error in errors))
+
+    def test_requires_explicit_catalog_prefix(self):
+        with tempfile.TemporaryDirectory(dir=ROOT / "tests") as directory:
+            skill = Path(directory) / "sample"
+            skill.mkdir()
+            (skill / "SKILL.md").write_text("Use `available`.", encoding="utf-8")
+            errors = validate_catalog.validate_references(skill, {"sample", "available"})
+            self.assertTrue(any("`catalog:available`" in error for error in errors))
+
 
 if __name__ == "__main__":
     unittest.main()

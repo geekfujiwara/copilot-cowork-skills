@@ -24,9 +24,9 @@ cowork:
 
 ## When NOT to Use
 
-- 社内情報（メール、Teams、会議、ファイル）のみが対象 → `m365_search-SearchM365` / `daily-briefing`
-- 出典検証を伴う徹底的な調査レポート → `deep-research-agent`
-- スライド・文書・表計算での納品 → `pptx` / `docx` / `xlsx`
+- 社内情報（メール、Teams、会議、ファイル）のみが対象 → Microsoft 365 検索による通常回答
+- 出典検証を伴う徹底的な調査レポート → 利用環境の調査機能
+- スライド・文書・表計算での納品 → 本スキルの対象外
 - 単一記事の要約や事実確認1件 → 通常の回答で足りる（本スキルは不要）
 
 ## ワークフロー
@@ -73,7 +73,7 @@ cowork:
 
 ### Step 4: 依頼があれば論点マップHTMLを作る
 
-「図で」「1枚にまとめて」「整理して」と言われたら `html` スキルの流儀で自己完結型HTMLを作る。
+「図で」「1枚にまとめて」「整理して」と言われたら利用環境の HTML 生成機能で自己完結型 HTML を作る。
 
 **レイアウトは横4列のフロー**（左→右で理解が進む）：
 
@@ -94,7 +94,7 @@ cowork:
 作成手順：
 
 1. `working/` にHTMLを書く
-2. `python scripts/validate.py <file>` で検証（`status: success` になるまで直す）
+2. 利用環境の HTML 検証機能で検証し、成功するまで直す
 3. `host-CopyArtifact(surface="output", source="working/<file>", destination="<日本語名>_<YYYYMMDD>.html")` で納品
 4. `Glob output/**/*` で存在を確認してから「できました」と伝える
 

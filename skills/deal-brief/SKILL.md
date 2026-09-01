@@ -20,11 +20,11 @@ cowork:
 
 ## When NOT to Use
 
-- 既に終了した会議の議事録要約や Action Items 抽出 → `meeting-intel` を使用
-- 1日の予定全般の俯瞰（朝のブリーフィング） → `daily-briefing` を使用
-- 会議のスケジュール調整や参加可否確認 → `schedule-meeting` を使用
-- 顧客企業の定例週次調査 → `client-digest` を使用
-- 業界アップデート全般 → `アップデート ダイジェスト スキル` を使用
+- 既に終了した会議の議事録要約や Action Items 抽出 → 会議要約機能
+- 1日の予定全般の俯瞰（朝のブリーフィング） → `catalog:daily-digest`
+- 会議のスケジュール調整や参加可否確認 → カレンダー管理機能
+- 顧客企業の定例週次調査 → `catalog:client-digest`
+- 業界アップデート全般 → `catalog:ai-digest`
 
 ## 入力の受け取り方
 
@@ -126,11 +126,11 @@ cowork:
 
 ## Trigger phrases — should NOT fire
 
-- 「昨日の会議の議事録まとめて」（→ meeting-intel）
-- 「今日の予定を教えて」（→ daily-briefing）
-- 「来週の会議スケジュール調整して」（→ schedule-meeting）
-- 「<顧客名> の最近の動向調べて」（→ client-digest / deep-research）
-- 「今週のアップデート教えて」（→ アップデート ダイジェスト スキル）
+- 「昨日の会議の議事録まとめて」（→ 会議要約機能）
+- 「今日の予定を教えて」（→ `catalog:daily-digest`）
+- 「来週の会議スケジュール調整して」（→ カレンダー管理機能）
+- 「<顧客名> の最近の動向調べて」（→ `catalog:client-digest`）
+- 「今週のアップデート教えて」（→ `catalog:ai-digest`）
 
 ## Guardrails
 
@@ -142,5 +142,5 @@ cowork:
 - 同一商談で過去にブリーフィングを出した形跡（output/ や memory）があれば
   差分・更新ポイントを冒頭で 2〜3 行触れる
 - ファイル出力は不要。Markdown インラインで返す（ユーザーが
-  「Word にして」「PDF にして」と明示した場合のみ docx/pdf スキルへ）
+  「Word にして」「PDF にして」と明示した場合は利用環境の文書生成機能へ引き渡す）
 - 検索、ページング、権限エラーの対処は `references/troubleshooting.md` を参照する

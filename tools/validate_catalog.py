@@ -41,6 +41,13 @@ BYPASS_RE = re.compile(
     r"ガード.{0,12}(?:回避|迂回)(?!しな)|承認.{0,12}(?:不要|省略)(?!しな)|プレビュー.{0,12}なし",
     re.I | re.S,
 )
+CATALOG_REF_RE = re.compile(r"`catalog:([a-z0-9]+(?:-[a-z0-9]+)*)`")
+COMPONENT_REF_RE = re.compile(r"(?<![A-Za-z0-9_.-])((?:references|scripts)/[A-Za-z0-9_.-]+)")
+MARKDOWN_LINK_RE = re.compile(r"\]\((?!https?://|mailto:|#)([^)#]+)(?:#[^)]+)?\)")
+NAMED_EXTERNAL_SKILL_RE = re.compile(
+    r"`([a-z][a-z0-9-]*)`\s*(?:スキル|skill)\b|\b([a-z][a-z0-9]*-[a-z0-9-]+)\s+(?:スキル|skill)\b",
+    re.I,
+)
 
 
 def read_text(path: Path) -> str:
@@ -79,7 +86,62 @@ def load_denylist(path: Path | None) -> list[str]:
             if line.strip() and not line.lstrip().startswith("#")]
 
 
-def validate_skill(skill: Path, configured: set[str], denylist: list[str]) -> list[str]:
+def validate_references(skill: Path, skill_names: set[str]) -> list[str]:
+    """他スキルと同梱コンポーネントへの参照が解決できることを検証する。"""
+    errors: list[str] = []
+    text_paths = [skill / "SKILL.md"]
+    references = skill / "references"
+    if references.is_dir():
+        text_paths.extend(sorted(references.glob("*.md")))
+
+    for path in text_paths:
+        if not path.is_file():
+            continue
+        text = read_text(path)
+        rel = path.relative_to(ROOT).as_posix()
+
+        for target in CATALOG_REF_RE.findall(text):
+            if target not in skill_names:
+                errors.append(f"{rel}: 未解決のカタログスキル参照です: catalog:{target}")
+            elif target == skill.name:
+                errors.append(f"{rel}: 自分自身へのカタログ参照です: catalog:{target}")
+
+        for other in sorted(skill_names - {skill.name}):
+            raw_ref = re.compile(rf"(?<!catalog:)`{re.escape(other)}`")
+            if raw_ref.search(text):
+                errors.append(
+                    f"{rel}: ローカルスキル参照は `catalog:{other}` と明記してください"
+                )
+
+        for match in NAMED_EXTERNAL_SKILL_RE.finditer(text):
+            target = next(group for group in match.groups() if group)
+            if target.lower() not in {"catalog", "custom"}:
+                errors.append(
+                    f"{rel}: 未宣言の名前付きスキル参照です: {target}. "
+                    "同梱スキルは `catalog:<name>`、外部機能は一般的な機能名で記載してください"
+                )
+
+        for component in COMPONENT_REF_RE.findall(text):
+            target = skill / component
+            if not target.is_file():
+                errors.append(f"{rel}: 同梱コンポーネント参照が見つかりません: {component}")
+
+        for link in MARKDOWN_LINK_RE.findall(text):
+            if link in {"...", "…"} or "<" in link or "{" in link:
+                continue
+            target = (path.parent / link).resolve()
+            try:
+                target.relative_to(skill.resolve())
+            except ValueError:
+                errors.append(f"{rel}: スキル外への相対リンクは禁止です: {link}")
+                continue
+            if not target.is_file():
+                errors.append(f"{rel}: Markdown リンクが見つかりません: {link}")
+    return errors
+
+
+def validate_skill(skill: Path, configured: set[str], denylist: list[str],
+                   skill_names: set[str]) -> list[str]:
     errors: list[str] = []
     doc = skill / "SKILL.md"
     rel = doc.relative_to(ROOT).as_posix()
@@ -132,6 +194,7 @@ def validate_skill(skill: Path, configured: set[str], denylist: list[str]) -> li
     refs = skill / "references"
     if not refs.is_dir() or not (refs / "troubleshooting.md").is_file():
         errors.append(f"{rel}: references/troubleshooting.md がありません")
+    errors.extend(validate_references(skill, skill_names))
     return errors
 
 
@@ -152,8 +215,10 @@ def validate_repository(denylist_path: Path | None = None) -> list[str]:
 
     if not SKILLS.is_dir():
         return errors + ["skills/: ディレクトリがありません"]
-    for skill in sorted(path for path in SKILLS.iterdir() if path.is_dir()):
-        errors.extend(validate_skill(skill, configured, denylist))
+    skill_dirs = sorted(path for path in SKILLS.iterdir() if path.is_dir())
+    skill_names = {path.name for path in skill_dirs}
+    for skill in skill_dirs:
+        errors.extend(validate_skill(skill, configured, denylist, skill_names))
 
     for path in sorted(ROOT.rglob("*")):
         if not path.is_file() or ".git" in path.parts or "build" in path.parts:

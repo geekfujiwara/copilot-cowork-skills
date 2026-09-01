@@ -45,9 +45,9 @@
 
 **対処**：`scripts/extract_pptx.py` で本文・表・ノートをテキスト抽出。画像は無視（ファクトはテキスト＋ノートに十分ある）。
 
-## 6. html スキルのサブエージェントが実行されないことがある
+## 6. HTML 生成機能が実行されないことがある
 
-**症状**：`Agent` 経由で html スキルを起動しても 0 tool use で何もせず返ることがある。
+**症状**：利用環境の HTML 生成機能を呼び出しても処理されずに返ることがある。
 
 **対処**：サブエージェントに任せず、**`generate.py`／`validate.py` を直接 Bash で実行**する（SKILL.md 手順 6）。
 report テンプレートの vars は `title`（必須）＋`sections`（`heading/body/items?/table?`）。

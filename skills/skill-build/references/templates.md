@@ -35,15 +35,13 @@ python scripts/scaffold_skill.py --name calendar-triage --type decision \
 | `context-action` | `weekly-review`, `meeting-prep` | 反復ワークフロー |
 | `domain-specific` | `vendor-invoice-tracker` | 狭いスコープ |
 
-**規則**: kebab-case、先頭は英数字、最大 64 文字。ビルトイン名（pdf, docx, email,
-calendar-management 等）を避ける。意図的に上書きするなら別名にせず、description に
-「This skill OVERRIDES the built-in X」と明記する（deck スキル 方式）。
+**規則**: kebab-case、先頭は英数字、最大 64 文字。利用環境の予約名を避け、上書きせず別名を使用する。
 
 ## 記入のコツ（採点を上げる）
 
 - **トリガー句は 4〜6 個**、実際にユーザーが言いそうな表現で。日本語・英語の両方を混ぜる。
-- **Do NOT use 行**で、似た別スキルへ明示的に委譲する（コエグジスタンス回避）。
+- **Do NOT use 行**で別スキルへ委譲する場合は、同じカタログに存在する名前を `catalog:<name>` 形式で記載する。
 - **ツールは具体名で**指定する（「適当なツール」ではなく `SearchM365` 等）。
 - **出力フォーマット**（長さ・構成・例）を必ず書く。
 - **過学習しない**: トリガーが外れたら逐語句ではなく広い概念を足す。
-- 詳細な品質基準はビルトイン skills スキルの `references/best-practices.md` を参照。
+- 詳細な品質基準は同梱の [publish-readiness.md](publish-readiness.md) を参照。
