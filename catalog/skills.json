@@ -4,25 +4,27 @@
     {
       "name": "business-trip",
       "category": "productivity",
-      "description": "予定表、メール、会議、社内資料、公開情報から出張要件と規定を集め、移動・宿泊・申請・関係者・資料を統合したMarkdown旅程を作る。 私的旅行、予約・購入・申請の自動実行、規定を確認できない経費判断には使用しない。",
+      "description": "予定表、メール、会議、社内資料、公開情報から出張要件と規定を集め、公共交通の経路・運賃概算、宿泊、申請、関係者、資料を統合したMarkdown旅程を作る。 交通費だけの概算にも対応する。私的旅行、予約・購入・申請の自動実行、規定を確認できない経費判断には使用しない。",
       "triggers": [
         "出張の旅程を作って",
         "商談に合わせてホテルと移動を計画して",
         "plan my business trip",
-        "社内規定に沿った出張計画を作って"
+        "社内規定に沿った出張計画を作って",
+        "交通費の概算を出して",
+        "移動経路と費用を調べて",
+        "estimate travel fare"
       ],
       "dependencies": {
         "capabilities": [
           "Outlook予定表 / メール",
           "Teams / 会議議事録",
           "SharePoint / OneDrive",
+          "ブラウザ",
           "Web検索",
           "社内検索",
           "ファイル読取"
         ],
-        "skills": [
-          "travel-fare"
-        ],
+        "skills": [],
         "components": [
           "references/output-template.md",
           "references/troubleshooting.md"
@@ -232,26 +234,6 @@
           "references/session-script-template.md",
           "references/troubleshooting.md",
           "scripts/extract-deck-text.py"
-        ]
-      }
-    },
-    {
-      "name": "travel-fare",
-      "category": "productivity",
-      "description": "公共交通機関の経路検索から片道・往復運賃、所要時間、乗換を概算し、取得元と確度を示す。 実際の経費申請、航空券、宿泊費、海外移動には使用しない。",
-      "triggers": [
-        "交通費の概算を出して",
-        "移動経路と費用を調べて",
-        "estimate travel fare"
-      ],
-      "dependencies": {
-        "capabilities": [
-          "ブラウザ",
-          "Web 検索"
-        ],
-        "skills": [],
-        "components": [
-          "references/troubleshooting.md"
         ]
       }
     }

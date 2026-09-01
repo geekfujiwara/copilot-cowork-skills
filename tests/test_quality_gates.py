@@ -109,6 +109,7 @@ class CatalogTests(unittest.TestCase):
         self.assertNotIn("ai-digest", names)
         self.assertNotIn("skill-build", names)
         self.assertNotIn("gallery", names)
+        self.assertNotIn("travel-fare", names)
 
     def test_rejects_missing_catalog_skill(self):
         with tempfile.TemporaryDirectory(dir=ROOT / "tests") as directory:
