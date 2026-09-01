@@ -1,0 +1,17 @@
+{
+  "title": "製品イメージギャラリー",
+  "categories": [
+    {
+      "name": "カテゴリA",
+      "images": [
+        {
+          "path": "images/example.png",
+          "title": "画像タイトル",
+          "alt": "画像の内容を具体的に説明する代替テキスト",
+          "source_url": "https://example.com/images/example",
+          "license": "利用条件は出典ページで要確認"
+        }
+      ]
+    }
+  ]
+}

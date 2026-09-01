@@ -97,7 +97,7 @@ def main(argv: list[str] | None = None) -> int:
             [
                 sys.executable,
                 "-B",
-                "skills/skill-build/scripts/audit_skill.py",
+                "skills/skill-builder/scripts/audit_skill.py",
                 str(skill),
             ],
             f"スキル監査: {skill.name}",

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import base64
 import json
 import sys
 import tempfile
@@ -23,15 +24,18 @@ def load_module(name: str, path: Path):
 validate_catalog = load_module("validate_catalog", ROOT / "tools" / "validate_catalog.py")
 preflight = load_module("preflight", ROOT / "tools" / "preflight.py")
 audit_skill = load_module(
-    "audit_skill", ROOT / "skills" / "skill-build" / "scripts" / "audit_skill.py"
+    "audit_skill", ROOT / "skills" / "skill-builder" / "scripts" / "audit_skill.py"
 )
 scaffold_skill = load_module(
-    "scaffold_skill", ROOT / "skills" / "skill-build" / "scripts" / "scaffold_skill.py"
+    "scaffold_skill", ROOT / "skills" / "skill-builder" / "scripts" / "scaffold_skill.py"
 )
 aggregate_records = load_module(
     "aggregate_records", ROOT / "skills" / "event-recap" / "scripts" / "aggregate_records.py"
 )
 package_skills = load_module("package_skills", ROOT / "tools" / "package_skills.py")
+generate_gallery = load_module(
+    "generate_gallery", ROOT / "skills" / "image-gallery" / "scripts" / "generate_gallery.py"
+)
 
 
 class ScaffoldTests(unittest.TestCase):
@@ -101,7 +105,9 @@ class CatalogTests(unittest.TestCase):
         self.assertIn("image-gallery", names)
         self.assertIn("business-trip", names)
         self.assertIn("digest-news", names)
+        self.assertIn("skill-builder", names)
         self.assertNotIn("ai-digest", names)
+        self.assertNotIn("skill-build", names)
         self.assertNotIn("gallery", names)
 
     def test_rejects_missing_catalog_skill(self):
@@ -166,6 +172,35 @@ class SkillPackagingTests(unittest.TestCase):
             self.assertIn("references/troubleshooting.md", names)
             self.assertFalse(any(name.startswith("business-trip/") for name in names))
 
+
+class ImageGalleryTests(unittest.TestCase):
+    def test_renders_self_contained_html_with_embedded_image(self):
+        png = base64.b64decode(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "image.png").write_bytes(png)
+            manifest = root / "gallery.json"
+            manifest.write_text(json.dumps({
+                "title": "<Gallery>",
+                "categories": [{"name": "Sample", "images": [{
+                    "path": "image.png", "title": "Example", "alt": "Example image",
+                    "source_url": "https://example.com/image", "license": "Example license",
+                }]}],
+            }), encoding="utf-8")
+            output = generate_gallery.render(manifest)
+            self.assertIn("data:image/png;base64,", output)
+            self.assertNotIn('src="https:' + "//", output)
+            self.assertIn("&lt;Gallery&gt;", output)
+
+    def test_rejects_fake_image_data(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "fake.png"
+            path.write_text("<script>alert(1)</script>", encoding="utf-8")
+            with self.assertRaises(ValueError):
+                generate_gallery.image_data_uri(path)
+
 class PublicationPreflightTests(unittest.TestCase):
     def test_rejects_private_and_generated_files(self):
         forbidden = {
@@ -182,7 +217,7 @@ class PublicationPreflightTests(unittest.TestCase):
 
     def test_allows_public_templates(self):
         allowed = {
-            "skills/skill-build/references/.env.example",
+            "skills/skill-builder/references/.env.example",
         }
         for path in allowed:
             with self.subTest(path=path):

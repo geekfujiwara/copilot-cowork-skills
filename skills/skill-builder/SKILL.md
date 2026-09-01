@@ -1,5 +1,5 @@
 ---
-name: skill-build
+name: skill-builder
 category: automation
 triggers:
    - スキルを作って

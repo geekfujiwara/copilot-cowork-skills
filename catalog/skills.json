@@ -148,19 +148,23 @@
     {
       "name": "image-gallery",
       "category": "research",
-      "description": "テーマを複数カテゴリに分け、検索画像をカテゴリ別タブの Adaptive Card ギャラリーとして表示する。 単一画像の表示、画像生成、文書への埋め込み、画像を伴わない調査には使用しない。",
+      "description": "テーマ別に検索した画像を安全に取得し、カテゴリ、出典、代替テキスト付きの自己完結HTMLギャラリーとして表示する。 画像生成、権利未確認画像の再配布、画像を伴わない調査には使用しない。",
       "triggers": [
-        "画像ギャラリーを作って",
+        "画像ギャラリーをHTMLで作って",
         "カテゴリ別に画像を見せて",
-        "image gallery by category"
+        "create an HTML image gallery"
       ],
       "dependencies": {
         "capabilities": [
-          "Web 検索"
+          "Web 検索",
+          "ファイル作成",
+          "HTML表示"
         ],
         "skills": [],
         "components": [
-          "references/troubleshooting.md"
+          "references/gallery-manifest.example.json",
+          "references/troubleshooting.md",
+          "scripts/generate_gallery.py"
         ]
       }
     },
@@ -184,7 +188,7 @@
       }
     },
     {
-      "name": "skill-build",
+      "name": "skill-builder",
       "category": "automation",
       "description": "パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・SKILL.md 簡潔化・参照整合・階層化) を実施する。 Use when user asks to \"スキルを作って\", \"スキルを更新\", \"スキルをブラッシュアップ\", \"スキルを公開したい\", \"スキルをチェックして\", \"create/update/audit a skill\". Do NOT use for 検証・採点・削除のみ — 利用環境のスキル管理機能に委譲。",
       "triggers": [
