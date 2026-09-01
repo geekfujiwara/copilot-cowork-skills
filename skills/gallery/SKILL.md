@@ -5,6 +5,8 @@ triggers:
   - 画像ギャラリーを作って
   - カテゴリ別に画像を見せて
   - image gallery by category
+capabilities:
+  - Web 検索
 description: |
   テーマを複数カテゴリに分け、検索画像をカテゴリ別タブの Adaptive Card ギャラリーとして表示する。
   単一画像の表示、画像生成、文書への埋め込み、画像を伴わない調査には使用しない。

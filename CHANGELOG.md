@@ -10,6 +10,7 @@
 - カタログ全体の自動検証と CI
 - カタログ内スキル、同梱ファイル、スクリプト、Markdown リンクの参照整合ゲート
 - 全チェック成功後にだけ push と PR 登録を行う `preflight.py` / `create_pull_request.py`
+- スキル定義から README とトリガー・依存関係カタログを同期する `sync_catalog.py`
 
 ### Changed
 

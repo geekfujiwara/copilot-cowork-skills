@@ -8,8 +8,8 @@ Issue と Pull Request を歓迎します。公開可能な最小差分にし、
 2. `SKILL.md` には正常系の連番 Step、トリガー、使用ツール、出力、ガードレールだけを簡潔に記載します。
 3. 詳細説明と異常系は `references/`、再利用する処理は `scripts/` に分離します。
 4. 環境依存値は `{{PLACEHOLDER}}` に置換し、必要なら `config/placeholders.example.json` に説明付きで追加します。実値は追加しません。
-5. スキル一覧を README に追加します。
-6. 変更を作業ブランチへコミットします。
+5. `python -B tools/sync_catalog.py` を実行し、README と `catalog/skills.json` を更新します。
+6. スキル変更と生成ファイルを作業ブランチへコミットします。
 7. `python -B tools/create_pull_request.py --title "<タイトル>" --body "<説明>"` で PR を登録します。
 
 ## 参照規約
@@ -24,6 +24,7 @@ Issue と Pull Request を歓迎します。公開可能な最小差分にし、
 
 - [ ] フォルダー名、`name`、kebab-case が一致する
 - [ ] `category`、`triggers`、`cowork.category`、`cowork.icon` がある
+- [ ] `capabilities` に必要な外部機能を列挙した
 - [ ] Step 番号が整数の連番で、正常系だけを説明している
 - [ ] 例外、背景、長いテンプレートは `references/` に分離した
 - [ ] 繰り返し可能な処理は `scripts/` で自動化した
@@ -50,9 +51,11 @@ Issue と Pull Request を歓迎します。公開可能な最小差分にし、
 
 1. 実値設定、`.env`、ZIP、生成物、キャッシュ、1 MiB 超のファイルが Git 管理対象にない
 2. `git diff --check` が成功する
-3. カタログの構造、秘匿化、安全性、参照整合が成功する
-4. 回帰テストが成功する
-5. 10 件すべてのスキル監査が `FAIL 0 / WARN 0` になる
-6. main 以外のブランチで、未コミット変更がなく、同一ブランチの未完了 PR がない
+3. README と `catalog/skills.json` が、全スキルの説明・トリガー・機能依存・`catalog:` 参照・同梱参照と一致する
+4. カタログの構造、秘匿化、安全性、参照整合が成功する
+5. 回帰テストが成功する
+6. すべてのスキル監査が `FAIL 0 / WARN 0` になる
+7. main 以外のブランチで、未コミット変更がなく、同一ブランチの未完了 PR がない
 
-いずれかが失敗した場合、push と PR 登録は行われません。GitHub 側でも同じ `preflight.py` を実行します。
+`create_pull_request.py` は生成ファイルを先に自動同期します。差分が生じた場合は、その差分をコミットするまで
+push と PR 登録を行いません。GitHub 側でも同じ `preflight.py` を check-only で実行します。

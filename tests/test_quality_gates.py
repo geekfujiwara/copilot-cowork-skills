@@ -50,6 +50,7 @@ class ScaffoldTests(unittest.TestCase):
         self.assertIn("name: sample-skill", text)
         self.assertIn("category: custom", text)
         self.assertIn("triggers:\n", text)
+        self.assertIn("capabilities:\n", text)
         self.assertIn("cowork:\n  category: custom", text)
 
 
@@ -81,6 +82,29 @@ class SafetyAuditTests(unittest.TestCase):
 class CatalogTests(unittest.TestCase):
     def test_repository_passes_publication_gate(self):
         self.assertEqual([], validate_catalog.validate_repository(None))
+
+    def test_generated_catalog_is_current_and_contains_routing_metadata(self):
+        self.assertEqual([], validate_catalog.generated_file_errors())
+        catalog = json.loads(validate_catalog.render_catalog_json())
+        deal_brief = next(
+            item for item in catalog["skills"] if item["name"] == "deal-brief"
+        )
+        self.assertIn("deal briefing", deal_brief["triggers"])
+        self.assertIn("予定表", deal_brief["dependencies"]["capabilities"])
+        self.assertEqual(
+            ["ai-digest", "client-digest", "daily-digest"],
+            deal_brief["dependencies"]["skills"],
+        )
+        self.assertIn(
+            "references/troubleshooting.md",
+            deal_brief["dependencies"]["components"],
+        )
+
+    def test_readme_generated_table_has_exactly_one_marker_pair(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertEqual(1, readme.count(validate_catalog.README_TABLE_BEGIN))
+        self.assertEqual(1, readme.count(validate_catalog.README_TABLE_END))
+        self.assertEqual(readme, validate_catalog.replace_generated_readme_table(readme))
 
     def test_rejects_missing_catalog_skill(self):
         with tempfile.TemporaryDirectory(dir=ROOT / "tests") as directory:

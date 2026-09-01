@@ -63,6 +63,8 @@ def _frontmatter(name: str, summary: str, category: str, icon: str,
         "  - [トリガー句1]\n"
         "  - [トリガー句2]\n"
         "  - [trigger phrase]\n"
+        "capabilities:\n"
+        "  - [必要な機能]\n"
         "description: |\n"
         f"  {summary} Use when user asks to \"[トリガー句1]\", \"[トリガー句2]\",\n"
         "  \"[トリガー句3]\", \"[トリガー句4]\".\n"

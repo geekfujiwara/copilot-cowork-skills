@@ -5,6 +5,11 @@ triggers:
   - 商談ブリーフィングを作って
   - 顧客打ち合わせの事前準備をして
   - deal briefing
+capabilities:
+  - 予定表
+  - メール
+  - Teams
+  - 議事録
 description: |
   カレンダー、メール、Teams、SharePoint の関連情報を統合し、指定商談の事前ブリーフィングを Markdown で作る。
   会議後の議事録、日次概要、日程調整、顧客企業の週次調査には使用しない。

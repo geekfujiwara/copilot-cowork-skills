@@ -5,6 +5,8 @@ triggers:
    - 自分用メモに送って
    - 自分とのチャットを取得して
    - open my self notes
+capabilities:
+   - Teams
 description: |
    Teams の「自分とのチャット」へ確認付きで投稿し、許可された範囲のメッセージや添付を取得する。
    他人とのチャット、会議チャット、メール、カレンダー操作には使用しない。

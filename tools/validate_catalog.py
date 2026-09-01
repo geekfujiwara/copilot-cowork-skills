@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import json
 import re
 import sys
 from pathlib import Path
@@ -14,7 +15,7 @@ SKILLS = ROOT / "skills"
 REQUIRED_ROOT_FILES = {
     "README.md", "LICENSE", "SECURITY.md", "CONTRIBUTING.md",
     "CODE_OF_CONDUCT.md", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md",
-    "PROVENANCE.md",
+    "PROVENANCE.md", "catalog/skills.json",
 }
 ALLOWED_CATEGORIES = {
     "productivity", "communication", "analysis", "writing", "research",
@@ -48,6 +49,17 @@ NAMED_EXTERNAL_SKILL_RE = re.compile(
     r"`([a-z][a-z0-9-]*)`\s*(?:スキル|skill)\b|\b([a-z][a-z0-9]*-[a-z0-9-]+)\s+(?:スキル|skill)\b",
     re.I,
 )
+README_TABLE_BEGIN = "<!-- BEGIN GENERATED SKILL TABLE -->"
+README_TABLE_END = "<!-- END GENERATED SKILL TABLE -->"
+CATEGORY_LABELS = {
+    "productivity": "生産性",
+    "communication": "コミュニケーション",
+    "analysis": "分析",
+    "writing": "文書作成",
+    "research": "調査",
+    "automation": "自動化",
+    "custom": "カスタム",
+}
 
 
 def read_text(path: Path) -> str:
@@ -77,6 +89,99 @@ def nested_scalar(fm: str, parent: str, key: str) -> str | None:
         return None
     value = re.search(rf"^[ \t]+{re.escape(key)}:\s*([^\n]+)$", match.group("body"), re.M)
     return value.group(1).strip().strip("\"'") if value else None
+
+
+def block_scalar(fm: str, key: str) -> str | None:
+    match = re.search(
+        rf"^{re.escape(key)}:\s*[|>][-+]?\s*\n(?P<body>(?:[ \t]+[^\n]*(?:\n|$))+)",
+        fm,
+        re.M,
+    )
+    if not match:
+        return None
+    lines = [line.strip() for line in match.group("body").splitlines()]
+    return " ".join(line for line in lines if line)
+
+
+def skill_metadata(skill: Path) -> dict[str, object]:
+    text = read_text(skill / "SKILL.md")
+    fm = frontmatter(text) or ""
+    source_paths = [skill / "SKILL.md"]
+    references = skill / "references"
+    if references.is_dir():
+        source_paths.extend(sorted(references.glob("*.md")))
+    source_text = "\n".join(read_text(path) for path in source_paths)
+    return {
+        "name": scalar(fm, "name") or skill.name,
+        "category": scalar(fm, "category") or "",
+        "description": block_scalar(fm, "description") or "",
+        "triggers": list_items(fm, "triggers"),
+        "dependencies": {
+            "capabilities": list_items(fm, "capabilities"),
+            "skills": sorted(set(CATALOG_REF_RE.findall(source_text))),
+            "components": sorted(set(COMPONENT_REF_RE.findall(source_text))),
+        },
+    }
+
+
+def catalog_data() -> dict[str, object]:
+    skills = [
+        skill_metadata(path)
+        for path in sorted(SKILLS.iterdir())
+        if path.is_dir()
+    ]
+    return {"schema_version": 1, "skills": skills}
+
+
+def render_catalog_json() -> str:
+    return json.dumps(catalog_data(), ensure_ascii=False, indent=2) + "\n"
+
+
+def render_readme_table() -> str:
+    rows = ["| 領域 | スキル | 概要 | 依存先 |", "|---|---|---|---|"]
+    skills = catalog_data()["skills"]
+    assert isinstance(skills, list)
+    for item in sorted(skills, key=lambda value: (str(value["category"]), str(value["name"]))):
+        dependencies = item["dependencies"]
+        assert isinstance(dependencies, dict)
+        capabilities = [str(value) for value in dependencies["capabilities"]]
+        skill_refs = [f"`catalog:{value}`" for value in dependencies["skills"]]
+        dependency_text = " / ".join(capabilities + skill_refs) or "なし"
+        description = str(item["description"]).split("。", 1)[0] + "。"
+        description = description.replace("|", "\\|")
+        rows.append(
+            f"| {CATEGORY_LABELS.get(str(item['category']), str(item['category']))} "
+            f"| `{item['name']}` | {description} | {dependency_text} |"
+        )
+    return "\n".join(rows)
+
+
+def replace_generated_readme_table(readme: str) -> str:
+    pattern = re.compile(
+        rf"{re.escape(README_TABLE_BEGIN)}.*?{re.escape(README_TABLE_END)}",
+        re.S,
+    )
+    replacement = f"{README_TABLE_BEGIN}\n{render_readme_table()}\n{README_TABLE_END}"
+    updated, count = pattern.subn(lambda _: replacement, readme)
+    if count != 1:
+        raise ValueError("README.md の生成テーブルマーカーが1組ではありません")
+    return updated
+
+
+def generated_file_errors() -> list[str]:
+    errors: list[str] = []
+    catalog_path = ROOT / "catalog" / "skills.json"
+    if not catalog_path.is_file() or read_text(catalog_path) != render_catalog_json():
+        errors.append("catalog/skills.json が最新ではありません: python -B tools/sync_catalog.py")
+    readme_path = ROOT / "README.md"
+    try:
+        expected_readme = replace_generated_readme_table(read_text(readme_path))
+    except (OSError, ValueError) as exc:
+        errors.append(f"README.md の生成領域を検証できません: {exc}")
+    else:
+        if read_text(readme_path) != expected_readme:
+            errors.append("README.md のスキル一覧が最新ではありません: python -B tools/sync_catalog.py")
+    return errors
 
 
 def load_denylist(path: Path | None) -> list[str]:
@@ -156,6 +261,7 @@ def validate_skill(skill: Path, configured: set[str], denylist: list[str],
     name = scalar(fm, "name")
     category = scalar(fm, "category")
     triggers = list_items(fm, "triggers")
+    capabilities = list_items(fm, "capabilities")
     cowork_category = nested_scalar(fm, "cowork", "category")
     cowork_icon = nested_scalar(fm, "cowork", "icon")
     if name != skill.name:
@@ -166,6 +272,8 @@ def validate_skill(skill: Path, configured: set[str], denylist: list[str],
         errors.append(f"{rel}: category が未設定または不正です")
     if len(triggers) < 3:
         errors.append(f"{rel}: triggers を 3 件以上設定してください")
+    if not capabilities:
+        errors.append(f"{rel}: capabilities を 1 件以上設定してください")
     if cowork_category != category:
         errors.append(f"{rel}: cowork.category と category を一致させてください")
     if not cowork_icon:
@@ -205,7 +313,6 @@ def validate_repository(denylist_path: Path | None = None) -> list[str]:
             errors.append(f"{filename}: 必須ファイルがありません")
 
     config_path = ROOT / "config" / "placeholders.example.json"
-    import json
     try:
         config = json.loads(read_text(config_path))
     except (OSError, json.JSONDecodeError) as exc:
@@ -219,6 +326,7 @@ def validate_repository(denylist_path: Path | None = None) -> list[str]:
     skill_names = {path.name for path in skill_dirs}
     for skill in skill_dirs:
         errors.extend(validate_skill(skill, configured, denylist, skill_names))
+    errors.extend(generated_file_errors())
 
     for path in sorted(ROOT.rglob("*")):
         if not path.is_file() or ".git" in path.parts or "build" in path.parts:

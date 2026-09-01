@@ -5,6 +5,8 @@ triggers:
   - AIニュースを検索してサマリーを作って
   - 最新動向をエグゼクティブサマリーで
   - AI news executive summary
+capabilities:
+  - Web 検索
 description: |
   公開 Web から AI・クラウド・業界ニュースを調査し、利用者向けの要約と任意の自己完結 HTML 論点マップを作る。
   社内データだけの要約、学術的な網羅調査、Office 文書の作成には使用しない。

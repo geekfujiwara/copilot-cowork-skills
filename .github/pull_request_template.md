@@ -12,6 +12,7 @@
 
 - [ ] 実在する個人名、会社名、顧客名、案件名、メール、GUID、内部 URL、シークレットを含まない
 - [ ] 同梱物を再配布する権利がある
+- [ ] `python -B tools/sync_catalog.py --check` が成功した
 - [ ] `python -B tools/preflight.py --base origin/main` が成功した
 - [ ] 発見した問題の再発防止チェックを追加した
 

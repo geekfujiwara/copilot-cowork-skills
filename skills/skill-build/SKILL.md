@@ -5,6 +5,8 @@ triggers:
    - スキルを作って
    - スキルを公開前チェックして
    - create or audit a skill
+capabilities:
+   - Cowork スキル基盤
 description: |
   パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・
   コンプライアンス・SKILL.md 簡潔化・参照整合・階層化) を実施する。

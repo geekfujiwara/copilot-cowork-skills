@@ -1,6 +1,6 @@
 # Copilot Cowork Skills
 
-Copilot Cowork 向けの再利用可能なコミュニティスキル集（10 スキル）です。
+Copilot Cowork 向けの再利用可能なコミュニティスキル集です。
 
 標準的な Microsoft 365 アプリと Web 検索のみに依存するスキルを厳選しています。
 組織固有のシステムに依存するスキルは含みません。個人情報・組織固有情報はすべて
@@ -8,18 +8,24 @@ Copilot Cowork 向けの再利用可能なコミュニティスキル集（10 �
 
 ## 収録スキル
 
+<!-- BEGIN GENERATED SKILL TABLE -->
 | 領域 | スキル | 概要 | 依存先 |
 |---|---|---|---|
-| ダイジェスト | `daily-digest` | 予定表・メール・Teams を集約した日次ブリーフィングを本人宛にメール送信 | 予定表 / メール / Teams |
-| | `client-digest` | 直近の打ち合わせから取引先を抽出し、AI 活用・DX・投資動向を Web 調査して週次送信 | 予定表 / メール / Web 検索 |
-| | `ai-digest` | AI・クラウド業界ニュースを収集し、エグゼクティブサマリーと 4 列フロー図を HTML 1 枚に | Web 検索 |
-| 商談・登壇 | `deal-brief` | 商談ブリーフィングを 7 セクション構成で即生成 | 予定表 / メール / Teams / 議事録 |
-| | `talk-prep` | 登壇依頼の受領から台本・当日資料の準備まで一気通貫で支援 | 社内検索 / ファイル読取 |
-| 記録 | `event-recap` | 当日資料と参加者リストから KPI を集計し、自己完結 HTML の開催レポートを作成 | SharePoint / PPTX |
-| ユーティリティ | `travel-fare` | 経路検索で交通費（片道・往復・所要時間・新幹線区間）を概算 | ブラウザ / Web 検索 |
-| | `gallery` | テーマを複数カテゴリに分けて画像を並行検索し、タブ分けギャラリーを表示 | Web 検索 |
-| | `self-note` | 「自分とのチャット」への送信・読み取り | Teams |
-| | `skill-build` | パーソナルスキルの新規作成・更新と公開前の品質ゲート | Cowork スキル基盤 |
+| 分析 | `event-recap` | PPTX と SharePoint の参加者リストから KPI を集計し、Fact Markdown と自己完結 HTML のイベントレポートを作る。 | SharePoint / PPTX |
+| 自動化 | `skill-build` | パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・SKILL.md 簡潔化・参照整合・階層化) を実施する。 | Cowork スキル基盤 |
+| 生産性 | `daily-digest` | カレンダー、メール、Teams、文書から本人向けの日次ブリーフィングを作成し、承認後に HTML メールで送信する。 | 予定表 / メール / Teams |
+| 生産性 | `deal-brief` | カレンダー、メール、Teams、SharePoint の関連情報を統合し、指定商談の事前ブリーフィングを Markdown で作る。 | 予定表 / メール / Teams / 議事録 / `catalog:ai-digest` / `catalog:client-digest` / `catalog:daily-digest` |
+| 生産性 | `self-note` | Teams の「自分とのチャット」へ確認付きで投稿し、許可された範囲のメッセージや添付を取得する。 | Teams |
+| 生産性 | `travel-fare` | 公共交通機関の経路検索から片道・往復運賃、所要時間、乗換を概算し、取得元と確度を示す。 | ブラウザ / Web 検索 |
+| 調査 | `ai-digest` | 公開 Web から AI・クラウド・業界ニュースを調査し、利用者向けの要約と任意の自己完結 HTML 論点マップを作る。 | Web 検索 |
+| 調査 | `client-digest` | 直近の打ち合わせから顧客企業を抽出し、公開情報から AI、業務変革、投資動向を調査して週次レポートを作る。 | 予定表 / メール / Web 検索 / `catalog:daily-digest` |
+| 調査 | `gallery` | テーマを複数カテゴリに分け、検索画像をカテゴリ別タブの Adaptive Card ギャラリーとして表示する。 | Web 検索 |
+| 文書作成 | `talk-prep` | 登壇依頼を読み、資料収集、シナリオ、タイトル、台本、スライド連携、返信下書きまでを支援する。 | 社内検索 / ファイル読取 |
+<!-- END GENERATED SKILL TABLE -->
+
+この一覧と [catalog/skills.json](catalog/skills.json) は各 `SKILL.md` から自動生成されます。
+機械可読カタログには説明、トリガー、必要機能、他スキル参照、同梱コンポーネント参照を収録しています。
+生成領域を直接編集せず、`python -B tools/sync_catalog.py` で同期してください。
 
 ## 命名規則
 
@@ -41,7 +47,7 @@ Copilot Cowork 向けの再利用可能なコミュニティスキル集（10 �
 4. `build/skills/` 配下の各フォルダを OneDrive の `Documents/Cowork/skills/` へコピーします
 5. Cowork で新しい会話を開始します（反映まで少し時間がかかります）
 
-必要なスキルだけを選んで導入しても構いません。スキル間に依存関係はありません。
+必要なスキルだけを選んで導入しても構いません。スキル間に必須依存関係はありません。
 他スキルへの任意の委譲は `` `catalog:<name>` `` で明示され、参照先がこのリポジトリ内に
 存在することを CI で検証します。名前付きの外部スキルは前提にしません。
 
@@ -86,6 +92,7 @@ zip にしてください。
 ## 公開前検証
 
 ```bash
+python -B tools/sync_catalog.py --check
 python tools/validate_catalog.py
 python -B -m unittest discover -s tests -v
 ```
@@ -101,6 +108,8 @@ python -B -m unittest discover -s tests -v
 
 スキルの構造、秘匿化、検証、Pull Request の要件は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
 PR は `python -B tools/create_pull_request.py` から登録すると、全品質ゲートの成功前には登録されません。
+スキルを追加・更新すると、同コマンドが README と `catalog/skills.json` を自動同期します。
+生成差分を含めてコミットするまで PR は登録されず、CI でも同期状態を再検証します。
 
 ## ライセンスと注意
 

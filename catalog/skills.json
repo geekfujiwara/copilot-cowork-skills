@@ -1,0 +1,226 @@
+{
+  "schema_version": 1,
+  "skills": [
+    {
+      "name": "ai-digest",
+      "category": "research",
+      "description": "公開 Web から AI・クラウド・業界ニュースを調査し、利用者向けの要約と任意の自己完結 HTML 論点マップを作る。 社内データだけの要約、学術的な網羅調査、Office 文書の作成には使用しない。",
+      "triggers": [
+        "AIニュースを検索してサマリーを作って",
+        "最新動向をエグゼクティブサマリーで",
+        "AI news executive summary"
+      ],
+      "dependencies": {
+        "capabilities": [
+          "Web 検索"
+        ],
+        "skills": [],
+        "components": [
+          "references/troubleshooting.md"
+        ]
+      }
+    },
+    {
+      "name": "client-digest",
+      "category": "research",
+      "description": "直近の打ち合わせから顧客企業を抽出し、公開情報から AI、業務変革、投資動向を調査して週次レポートを作る。 単一企業の深掘り、社内業績レポート、日次ブリーフィングには使用しない。",
+      "triggers": [
+        "顧客調査レポートを作って",
+        "今週の顧客リサーチ",
+        "weekly customer intelligence"
+      ],
+      "dependencies": {
+        "capabilities": [
+          "予定表",
+          "メール",
+          "Web 検索"
+        ],
+        "skills": [
+          "daily-digest"
+        ],
+        "components": [
+          "references/troubleshooting.md"
+        ]
+      }
+    },
+    {
+      "name": "daily-digest",
+      "category": "productivity",
+      "description": "カレンダー、メール、Teams、文書から本人向けの日次ブリーフィングを作成し、承認後に HTML メールで送信する。 画面表示だけの概要、他人向けの状況共有、単一会議の詳細要約には使用しない。",
+      "triggers": [
+        "毎日のブリーフィングをメールで送って",
+        "今日のブリーフィングを自分宛に送信",
+        "daily briefing email"
+      ],
+      "dependencies": {
+        "capabilities": [
+          "予定表",
+          "メール",
+          "Teams"
+        ],
+        "skills": [],
+        "components": [
+          "references/troubleshooting.md"
+        ]
+      }
+    },
+    {
+      "name": "deal-brief",
+      "category": "productivity",
+      "description": "カレンダー、メール、Teams、SharePoint の関連情報を統合し、指定商談の事前ブリーフィングを Markdown で作る。 会議後の議事録、日次概要、日程調整、顧客企業の週次調査には使用しない。",
+      "triggers": [
+        "商談ブリーフィングを作って",
+        "顧客打ち合わせの事前準備をして",
+        "deal briefing"
+      ],
+      "dependencies": {
+        "capabilities": [
+          "予定表",
+          "メール",
+          "Teams",
+          "議事録"
+        ],
+        "skills": [
+          "ai-digest",
+          "client-digest",
+          "daily-digest"
+        ],
+        "components": [
+          "references/troubleshooting.md"
+        ]
+      }
+    },
+    {
+      "name": "event-recap",
+      "category": "analysis",
+      "description": "PPTX と SharePoint の参加者リストから KPI を集計し、Fact Markdown と自己完結 HTML のイベントレポートを作る。 会議議事録の要約や単純なメール・カレンダー操作には使用しない。",
+      "triggers": [
+        "イベントレポートを作って",
+        "当日資料と参加者リストからファクトをまとめて",
+        "create an event recap"
+      ],
+      "dependencies": {
+        "capabilities": [
+          "SharePoint",
+          "PPTX"
+        ],
+        "skills": [],
+        "components": [
+          "references/extensions.md",
+          "references/fact_md_template.md",
+          "references/kpi_catalog.md",
+          "references/troubleshooting.md",
+          "scripts/aggregate_attendees.py",
+          "scripts/aggregate_scoring.py",
+          "scripts/extract_pptx.py"
+        ]
+      }
+    },
+    {
+      "name": "gallery",
+      "category": "research",
+      "description": "テーマを複数カテゴリに分け、検索画像をカテゴリ別タブの Adaptive Card ギャラリーとして表示する。 単一画像の表示、画像生成、文書への埋め込み、画像を伴わない調査には使用しない。",
+      "triggers": [
+        "画像ギャラリーを作って",
+        "カテゴリ別に画像を見せて",
+        "image gallery by category"
+      ],
+      "dependencies": {
+        "capabilities": [
+          "Web 検索"
+        ],
+        "skills": [],
+        "components": [
+          "references/troubleshooting.md"
+        ]
+      }
+    },
+    {
+      "name": "self-note",
+      "category": "productivity",
+      "description": "Teams の「自分とのチャット」へ確認付きで投稿し、許可された範囲のメッセージや添付を取得する。 他人とのチャット、会議チャット、メール、カレンダー操作には使用しない。",
+      "triggers": [
+        "自分用メモに送って",
+        "自分とのチャットを取得して",
+        "open my self notes"
+      ],
+      "dependencies": {
+        "capabilities": [
+          "Teams"
+        ],
+        "skills": [],
+        "components": [
+          "references/troubleshooting.md"
+        ]
+      }
+    },
+    {
+      "name": "skill-build",
+      "category": "automation",
+      "description": "パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・SKILL.md 簡潔化・参照整合・階層化) を実施する。 Use when user asks to \"スキルを作って\", \"スキルを更新\", \"スキルをブラッシュアップ\", \"スキルを公開したい\", \"スキルをチェックして\", \"create/update/audit a skill\". Do NOT use for 検証・採点・削除のみ — 利用環境のスキル管理機能に委譲。",
+      "triggers": [
+        "スキルを作って",
+        "スキルを公開前チェックして",
+        "create or audit a skill"
+      ],
+      "dependencies": {
+        "capabilities": [
+          "Cowork スキル基盤"
+        ],
+        "skills": [],
+        "components": [
+          "references/.env.example",
+          "references/error-flows.md",
+          "references/publish-readiness.md",
+          "references/templates.md",
+          "references/troubleshooting.md",
+          "scripts/audit_skill.py",
+          "scripts/scaffold_skill.py"
+        ]
+      }
+    },
+    {
+      "name": "talk-prep",
+      "category": "writing",
+      "description": "登壇依頼を読み、資料収集、シナリオ、タイトル、台本、スライド連携、返信下書きまでを支援する。 単発の社内会議準備や議事録要約には使用しない。",
+      "triggers": [
+        "登壇の準備をして",
+        "セッションの台本を作って",
+        "prepare my talk"
+      ],
+      "dependencies": {
+        "capabilities": [
+          "社内検索",
+          "ファイル読取"
+        ],
+        "skills": [],
+        "components": [
+          "references/edge-cases.md",
+          "references/session-script-template.md",
+          "references/troubleshooting.md",
+          "scripts/extract-deck-text.py"
+        ]
+      }
+    },
+    {
+      "name": "travel-fare",
+      "category": "productivity",
+      "description": "公共交通機関の経路検索から片道・往復運賃、所要時間、乗換を概算し、取得元と確度を示す。 実際の経費申請、航空券、宿泊費、海外移動には使用しない。",
+      "triggers": [
+        "交通費の概算を出して",
+        "移動経路と費用を調べて",
+        "estimate travel fare"
+      ],
+      "dependencies": {
+        "capabilities": [
+          "ブラウザ",
+          "Web 検索"
+        ],
+        "skills": [],
+        "components": [
+          "references/troubleshooting.md"
+        ]
+      }
+    }
+  ]
+}

@@ -5,6 +5,10 @@ triggers:
   - 顧客調査レポートを作って
   - 今週の顧客リサーチ
   - weekly customer intelligence
+capabilities:
+  - 予定表
+  - メール
+  - Web 検索
 description: |
   直近の打ち合わせから顧客企業を抽出し、公開情報から AI、業務変革、投資動向を調査して週次レポートを作る。
   単一企業の深掘り、社内業績レポート、日次ブリーフィングには使用しない。

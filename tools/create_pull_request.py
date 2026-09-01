@@ -55,8 +55,16 @@ def main(argv: list[str] | None = None) -> int:
             return fail("detached HEAD では PR を登録できません")
         if branch == args.base:
             return fail(f"ベースブランチ {args.base!r} から直接 PR は作成できません")
+
+        execute(
+            [sys.executable, "-B", "tools/sync_catalog.py"],
+            "README・トリガー・依存関係を同期",
+        )
         if capture(["git", "status", "--porcelain"]):
-            return fail("未コミットの変更があります。検証対象をコミットしてから再実行してください")
+            return fail(
+                "未コミットの変更があります。自動同期された README.md と "
+                "catalog/skills.json を含めてコミットし、再実行してください"
+            )
 
         execute(["git", "fetch", "origin", args.base], "ベースブランチを更新")
         base_ref = f"origin/{args.base}"
@@ -83,6 +91,7 @@ def main(argv: list[str] | None = None) -> int:
         report = (
             "\n\n## 自動事前検証\n\n"
             "- [x] 公開対象ファイルの安全性\n"
+            "- [x] README・トリガー・依存関係の同期\n"
             "- [x] 構造・汎用化・秘匿化・参照整合\n"
             "- [x] 回帰テスト\n"
             "- [x] 全スキル監査\n\n"

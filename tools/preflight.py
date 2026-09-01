@@ -83,6 +83,10 @@ def main(argv: list[str] | None = None) -> int:
         diff_command.append(f"{args.base}...HEAD")
     passed = run(diff_command, "Git whitespace 検証") and passed
     passed = run(
+        [sys.executable, "-B", "tools/sync_catalog.py", "--check"],
+        "README・トリガー・依存関係の同期検証",
+    ) and passed
+    passed = run(
         [sys.executable, "-B", "tools/validate_catalog.py"],
         "カタログ検証（構造・秘匿・参照を含む）",
     ) and passed

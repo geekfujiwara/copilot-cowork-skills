@@ -5,6 +5,9 @@ triggers:
   - イベントレポートを作って
   - 当日資料と参加者リストからファクトをまとめて
   - create an event recap
+capabilities:
+  - SharePoint
+  - PPTX
 description: |
   PPTX と SharePoint の参加者リストから KPI を集計し、Fact Markdown と自己完結 HTML のイベントレポートを作る。
   会議議事録の要約や単純なメール・カレンダー操作には使用しない。
