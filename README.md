@@ -42,41 +42,39 @@
 ```mermaid
 flowchart LR
 	SP[sales-prep]
-	ER[event-recap]
 	DB[daily-brief]
-	PR[project-review]
+	MSA[multi-source-analysis]
+	EV[evidence-review]
 	MT[message-triage]
 	IR[interactive-report]
 
 	SP -->|HTMLレポート生成| IR
-	ER -->|イベントレポート生成| IR
 	DB -->|日次レポート生成| IR
-	PR -->|レビューレポート生成| IR
+	MSA -->|分析結果を可視化| IR
+	EV -->|レビューレポート生成| IR
 	MT -->|整理結果レポート生成| IR
 
 	classDef caller fill:#F5F7FB,stroke:#8FB3E0,color:#1E2761;
 	classDef shared fill:#EAF1FB,stroke:#0F6CBD,color:#1E2761;
-	class SP,ER,DB,PR,MT caller;
+	class SP,DB,MSA,EV,MT caller;
 	class IR shared;
 ```
 
-`sales-prep`、`event-recap`、`daily-brief`、`project-review`、`message-triage` は、自己完結型HTMLの生成と検証に `interactive-report` を利用します。その他のスキル間には、現在、実行時の直接呼び出しはありません。
+`sales-prep`、`daily-brief`、`multi-source-analysis`、`evidence-review`、`message-triage` は、自己完結型HTMLの生成と検証に `interactive-report` を利用します。その他のスキル間には、現在、実行時の直接呼び出しはありません。
 
 ## スキル一覧
 
 <!-- BEGIN GENERATED SKILL TABLE -->
 | 領域 | スキル | 概要 | 依存先 |
 |---|---|---|---|
-| 分析 | `event-recap` | ユーザーが指定または添付した資料と参加者データからKPIを集計し、根拠付きのインタラクティブHTMLイベントレポートを作る。 | ファイル読取 / 作成 / HTML表示 / Excel / CSV / JSON / SharePoint / OneDrive / Teams / 会議議事録 / Outlook予定表 / メール / 社内検索 / `catalog:interactive-report` |
+| 分析 | `evidence-review` | 企画、提案、計画、プロセス、成果物、文書、設計、施策など任意の対象を、組織の基準と確認可能な成功事例に照らしてレビューする。 | AskUserQuestion / 社内検索 / ファイル読取 / Teams / 会議議事録 / SharePoint / OneDrive / Web検索 / ファイル作成 / HTML表示 / `catalog:interactive-report` |
 | 分析 | `interactive-report` | 入力資料、組織内情報、過去の成功事例、公開Web情報を調査し、根拠あるゴールとKPIを立案して、チャートや検索を備えた自己完結型HTML分析レポートにまとめる。 | ファイル読取 / 作成 / HTML表示 / Python / データ可視化 / 社内検索 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive / Web検索 |
-| 分析 | `project-review` | 企画、提案、取り組み、成果物、プロセス、導入プロジェクトを、組織の方針と実績を確認できる成功事例に照らしてレビューする。 | 社内検索 / ファイル読取 / Teams / 会議議事録 / SharePoint / OneDrive / Web検索 / ファイル作成 / HTML表示 / `catalog:interactive-report` |
-| 自動化 | `skill-builder` | パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・業務コンテキスト・SKILL.md 簡潔化・参照整合・階層化) を実施する。 | Cowork スキル基盤 / `catalog:account-plan` / `catalog:business-trip` / `catalog:daily-brief` / `catalog:event-recap` / `catalog:image-gallery` / `catalog:self-chat` / `catalog:session-prep` |
+| 分析 | `multi-source-analysis` | 複数形式・複数ソースの構造化／半構造化／文書データを統合し、品質確認、集計、比較、傾向、関係性、異常、仮説を根拠付きで分析する。 | AskUserQuestion / ファイル読取 / 作成 / Excel / CSV / TSV / JSON / 文書 / PowerPoint / PDF / SharePoint / OneDrive / Teams / 会議議事録 / Outlook / メール / 社内検索 / Web検索 / Python / データ分析 / HTML表示 / `catalog:interactive-report` |
+| 自動化 | `skill-builder` | パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・業務コンテキスト・SKILL.md 簡潔化・参照整合・階層化) を実施する。 | Cowork スキル基盤 / `catalog:account-plan` / `catalog:business-trip` / `catalog:daily-brief` / `catalog:evidence-review` / `catalog:multi-source-analysis` / `catalog:session-prep` |
 | 生産性 | `account-plan` | 社内規定、過去の成功事例、指定様式、顧客接点、販売対象、予算を組織内情報から確認し、根拠あるゴール、KPI、実行ステップ、予算配分をインタラクティブHTMLにまとめる。 | AskUserQuestion / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive / 社内検索 / Web検索 / ファイル読取 / 作成 / HTML表示 |
 | 生産性 | `business-trip` | 予定表、メール、会議、社内資料、公開情報から出張要件と規定を集め、公共交通の経路・運賃概算、宿泊、申請、関係者、資料を統合したMarkdown旅程を作る。 | Outlook予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / ブラウザ / Web検索 / 社内検索 / ファイル読取 |
 | 生産性 | `daily-brief` | 予定表、メール、Teams、商談、ニュース、顧客動向を統合し、インタラクティブHTMLと重複のない本人向けメールにまとめる。 | 予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / Web 検索 / 会話履歴 / ファイル読取 / 作成 / HTML表示 / スケジュール実行 / `catalog:interactive-report` |
 | 生産性 | `message-triage` | 許可されたTeamsチャットとメールを横断し、期限、依頼、影響、未解決の約束を根拠に重要メッセージを整理する。 | Teams / チャット / Outlook / メール / 社内検索 / AskUserQuestion / ファイル作成 / HTML表示 / `catalog:interactive-report` |
-| 生産性 | `self-chat` | Teamsの「自分とのチャット」へ確認付きで投稿し、本人のObject IDを使ったGraph API経由でメッセージ、本文内画像、参照添付を取得する。 | Teams / Microsoft Graph / SharePoint / OneDrive |
-| 調査 | `image-gallery` | テーマ別に検索した画像を安全に取得し、カテゴリ、出典、代替テキスト付きの自己完結HTMLギャラリーとして表示する。 | Web 検索 / ファイル作成 / HTML表示 |
 | 調査 | `sales-prep` | 商談の目的と対象を確定し、社内の接点・資料と公開情報を調査して、顧客課題、注力領域、競合動向、仮説、質問、次の行動を根拠付きの商談準備レポートにまとめる。 | AskUserQuestion / Outlook予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / 社内検索 / Web検索 / ファイル読取 / 作成 / HTML表示 / `catalog:interactive-report` |
 | 文書作成 | `powerpoint-builder` | 入力資料、組織内情報、公開情報を根拠にストーリーと視覚表現を設計し、編集可能なPowerPointを作成して内容・レイアウト・OOXML互換性を検証する。 | ファイル読取 / 作成 / PowerPoint / 画像生成 / 画像検索 / 取得 / Python / Node.js / Web検索 / 社内検索 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive |
 | 文書作成 | `session-prep` | 登壇依頼を読み、組織の規定と成功事例を確認して、シナリオ、タイトル、台本、スライド連携、返信下書きまでを支援する。 | 社内検索 / ファイル読取 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive |
@@ -90,12 +88,11 @@ flowchart LR
 |---|---|
 | 出張計画 | 「来週の大阪出張を、社内規定と会議予定に沿って計画して」 |
 | アカウント計画 | 「今期の予算と社内規定を確認して、担当顧客のアカウントプランを作って」 |
-| イベント集計 | 「添付のExcelと当日資料からイベントレポートを作って」 |
-| 画像収集 | 「新製品画像をカテゴリ別のギャラリーにして」 |
+| データ分析 | 「複数のExcelとアンケートを統合して、傾向と課題を分析して」 |
 | 商談準備 | 「明日の顧客会議の商談ブリーフィングを作って」 |
 | 日次整理 | 「今日の予定と重要メールをブリーフィングにして」 |
 | セッション準備 | 「来月の講演について、資料と過去事例を確認して台本を作って」 |
-| プロジェクトレビュー | 「この企画を組織の方針と成功事例に照らしてレビューして」 |
+| 根拠ベースレビュー | 「この内容を組織の方針と成功事例に照らしてレビューして」 |
 | メッセージ整理 | 「今週の重要なメールとTeamsチャットを整理して、対応案を確認して」 |
 
 Coworkが必要な情報へアクセスできない場合は、対象ファイルを会話へ添付するか、アクセス権のある保存場所を指定します。
