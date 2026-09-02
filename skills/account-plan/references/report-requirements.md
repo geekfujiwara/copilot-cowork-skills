@@ -1,6 +1,6 @@
 # HTMLレポート要件
 
-`scripts/generate_report.py` を使用し、単一HTMLとして出力する。
+`catalog:interactive-report` を呼び出し、`output/account-plan.html` に単一HTMLとして出力する。Account Plan内でHTML、CSS、JavaScriptを直接生成せず、次の計画データと表示要件をレポートスキルへ渡す。
 
 - 概要カード: 期間、総予算、配分済み、未配分、主要KPI
 - フィルター: アカウント、製品・サービス、状態
@@ -11,3 +11,5 @@
 - 根拠: 社内規定、成功事例、会議・チャット・メール、公開情報の出典と取得日時
 
 レポートはClawpilotテーマ変数を使用し、ライト・ダークテーマ、キーボード操作、900px以下の縦表示、印刷に対応する。外部画像、フォント、スクリプト、ネットワーク要求を含めない。内部URLは利用者に権限があるものだけを表示する。
+
+`catalog:interactive-report` を利用できない場合は独自HTMLへフォールバックせず、同じ見出しを持つMarkdownと「HTMLレポート未生成」の注記を提示する。
