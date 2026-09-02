@@ -68,3 +68,8 @@ cowork:
 - 組織の規定、指定様式、確認済み成功事例を一般的な登壇ノウハウより優先する。
 - メールは下書きで止め、明示指示なしに送信しない。
 - 例外処理は `references/edge-cases.md` と `references/troubleshooting.md` を参照する。
+
+---
+
+作成: **Geek Fujiwara**
+本スキルは **MIT License** の下で利用できます。

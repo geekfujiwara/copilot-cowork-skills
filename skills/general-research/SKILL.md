@@ -52,3 +52,8 @@ cowork:
 - 出典のない主張、引用、数値を作らない。
 - 長文転載を避け、引用は必要最小限にする。
 - 例外処理は `references/troubleshooting.md` を参照する。
+
+---
+
+作成: **Geek Fujiwara**
+本スキルは **MIT License** の下で利用できます。

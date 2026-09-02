@@ -11,6 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 SKILLS = ROOT / "skills"
 DIST = ROOT / "dist"
+LICENSE = ROOT / "LICENSE"
 
 
 def source_files(skill: Path) -> dict[str, Path]:
@@ -22,6 +23,7 @@ def source_files(skill: Path) -> dict[str, Path]:
             files[path.relative_to(skill).as_posix()] = path
     if "SKILL.md" not in files:
         raise ValueError(f"SKILL.md がありません: {skill.name}")
+    files["LICENSE"] = LICENSE
     return files
 
 

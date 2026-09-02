@@ -56,3 +56,8 @@ cowork:
 - 既存スキルで対応できる業務に重複スキルを提案しない。
 - 明示承認なしにスキル作成、変更、削除、公開を行わない。
 - 詳細は `references/candidate-rubric.md`、例外は `references/troubleshooting.md` を参照する。
+
+---
+
+作成: **Geek Fujiwara**
+本スキルは **MIT License** の下で利用できます。

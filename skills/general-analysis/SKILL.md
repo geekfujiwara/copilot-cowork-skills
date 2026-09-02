@@ -63,3 +63,8 @@ cowork:
 - 小集団や個人が再識別される切り口を表示しない。
 - 統計的有意性と業務上の重要性を区別する。
 - 例外処理は `references/troubleshooting.md` を参照する。
+
+---
+
+作成: **Geek Fujiwara**
+本スキルは **MIT License** の下で利用できます。

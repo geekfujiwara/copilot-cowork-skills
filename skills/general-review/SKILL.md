@@ -54,3 +54,8 @@ cowork:
 - 出典がない数値、効果、比較結果を作らない。
 - 権限を迂回しない。専門判断は該当部門への確認事項とする。
 - 例外処理は `references/troubleshooting.md` を参照する。
+
+---
+
+作成: **Geek Fujiwara**
+本スキルは **MIT License** の下で利用できます。

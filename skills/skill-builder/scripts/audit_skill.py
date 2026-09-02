@@ -341,6 +341,21 @@ def check_business_context(texts):
     return [_result("context/business", "PASS", "組織内コンテキストと不足前提の確認を確認")]
 
 
+def check_attribution(texts):
+    expected = (
+        "---\n\n作成: **Geek Fujiwara**\n"
+        "本スキルは **MIT License** の下で利用できます。"
+    )
+    skill_md = texts.get("SKILL.md", "").replace("\r\n", "\n").rstrip()
+    present = skill_md.endswith(expected)
+    return [_result(
+        "metadata/attribution",
+        "PASS" if present else "FAIL",
+        "Geek Fujiwaraの作成者署名とMIT License表記を確認"
+        if present else "SKILL.md末尾に作成者署名とMIT License表記がありません",
+    )]
+
+
 # --------------------------------------------------------------------------
 def audit(root, tenant_terms=(), max_skill=5000, max_desc=300):
     texts = read_texts(root)
@@ -352,6 +367,7 @@ def audit(root, tenant_terms=(), max_skill=5000, max_desc=300):
     results += check_assets(root)
     results += check_safety(texts)
     results += check_business_context(texts)
+    results += check_attribution(texts)
     return results
 
 
