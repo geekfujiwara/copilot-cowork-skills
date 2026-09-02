@@ -4,7 +4,7 @@
 
 ## 参照する標準パターン
 
-- `catalog:account-plan`: 社内規定、成功事例、Teams、Outlook、SharePoint等から前提を取得し、AskUserQuestion、KPI、予算、実行計画、自己完結HTMLへつなぐ業務計画
+- `catalog:account-plan`: 社内規定、成功事例、Teams、Outlook、SharePoint等から前提を取得し、AskUserQuestion、KPI、予算、実行計画を設計して、HTML生成を `catalog:interactive-report` へ委譲する業務計画
 - `catalog:business-trip`: 組織規定、申請経路、過去実績、公開情報を区別する計画
 - `catalog:daily-brief`: 継続会話、単一履歴、差分配信、重複防止、スケジュール実行
 - `catalog:general-research`: 任意テーマの社内外調査、情報源評価、事実・推論・ギャップの分離
