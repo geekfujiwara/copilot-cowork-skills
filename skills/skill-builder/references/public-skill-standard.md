@@ -7,10 +7,9 @@
 - `catalog:account-plan`: 社内規定、成功事例、Teams、Outlook、SharePoint等から前提を取得し、AskUserQuestion、KPI、予算、実行計画、自己完結HTMLへつなぐ業務計画
 - `catalog:business-trip`: 組織規定、申請経路、過去実績、公開情報を区別する計画
 - `catalog:daily-brief`: 継続会話、単一履歴、差分配信、重複防止、スケジュール実行
-- `catalog:event-recap`: 複数入力形式、KPI定義、母数・欠損・根拠の検算
+- `catalog:multi-source-analysis`: 複数入力形式、データ契約、品質検査、母数・欠損・根拠の検算
+- `catalog:evidence-review`: 任意対象を組織基準と確認済み成功事例に照らす、根拠ベースのレビュー
 - `catalog:session-prep`: 組織の指定様式、過去成功パターン、下書きで止める外部作用
-- `catalog:image-gallery`: 安全な取得、入力検証、自己完結HTML
-- `catalog:self-chat`: 最小権限、本人限定、送信確認
 
 ## 作成・更新の判定
 
