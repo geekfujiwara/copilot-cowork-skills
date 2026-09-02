@@ -1,0 +1,57 @@
+name: Release skill ZIPs
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "skills/**"
+      - ".github/workflows/release-skills.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-skills-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Audit every skill
+        shell: bash
+        run: |
+          set -euo pipefail
+          for skill in skills/*; do
+            [ -d "$skill" ] || continue
+            python -B skills/skill-builder/scripts/audit_skill.py "$skill"
+          done
+      - name: Build and verify skill ZIPs
+        run: |
+          python -B skills/skill-builder/scripts/package_skills.py
+          python -B skills/skill-builder/scripts/package_skills.py --check
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          short_sha="${GITHUB_SHA::7}"
+          tag="skills-${short_sha}"
+          title="Copilot Cowork Skills ${short_sha}"
+          notes="All skill ZIPs generated and validated from commit ${GITHUB_SHA}."
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" dist/*.zip --clobber
+            gh release edit "$tag" --title "$title" --notes "$notes"
+          else
+            gh release create "$tag" dist/*.zip \
+              --target "$GITHUB_SHA" \
+              --title "$title" \
+              --notes "$notes"
+          fi

@@ -26,3 +26,7 @@ jobs:
             [ -d "$skill" ] || continue
             python -B skills/skill-builder/scripts/audit_skill.py "$skill"
           done
+      - name: Build and verify skill ZIPs
+        run: |
+          python -B skills/skill-builder/scripts/package_skills.py
+          python -B skills/skill-builder/scripts/package_skills.py --check

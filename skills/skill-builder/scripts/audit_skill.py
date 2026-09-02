@@ -34,7 +34,7 @@ import sys
 RISKY_BINARY_EXT = {".ttc", ".ttf", ".otf", ".woff", ".woff2", ".eot"}
 # 除外してよい既知の技術ドメイン (XML 名前空間など)
 ALLOWED_HOST_RE = re.compile(
-    r"(schemas\.|w3\.org|openxmlformats|purl\.org|example\.(com|org)|"
+    r"(schemas\.|w3\.org|openxmlformats|purl\.org|example\.(com|org)|msicons\.com|learn\.microsoft\.com|"
     r"teams\.microsoft\.com|graph\.microsoft\.com|www\.google\.com|transit\.yahoo\.co\.jp)",
     re.I,
 )
@@ -309,7 +309,16 @@ def check_business_context(texts):
         body,
         re.IGNORECASE,
     )
-    if category not in {"productivity", "analysis", "writing"} or not business_task:
+    presentation_only = re.search(
+        r"データ収集や業務判断は.{0,30}(?:依頼元|行わない)|表示専用|変換専用",
+        body,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if (
+        category not in {"productivity", "analysis", "writing"}
+        or not business_task
+        or presentation_only
+    ):
         return [_result("context/business", "PASS", "組織判断を伴う業務スキルの対象外")]
 
     organization_context = re.search(
