@@ -6,14 +6,15 @@ triggers:
   - 当日資料と参加者データからファクトをまとめて
   - create an event recap
 capabilities:
-  - ファイル読取
+  - ファイル読取 / 作成
+  - HTML表示
   - Excel / CSV / JSON
   - SharePoint / OneDrive
   - Teams / 会議議事録
   - Outlook予定表 / メール
   - 社内検索
 description: |
-  ユーザーが指定または添付した資料と参加者データから KPI を集計し、根拠付き Markdown のイベントレポートを作る。
+  ユーザーが指定または添付した資料と参加者データからKPIを集計し、根拠付きのインタラクティブHTMLイベントレポートを作る。
   会議議事録の要約や単純なメール・カレンダー操作には使用しない。
 cowork:
   category: analysis
@@ -22,7 +23,7 @@ cowork:
 
 # event-recap — イベント開催レポート
 
-当日資料と参加者・アンケート等の構造化データから、出典と前提を明記した Markdown レポートを作る。
+当日資料と参加者・アンケート等の構造化データから、出典と前提を明記したインタラクティブHTMLレポートを作る。
 入力元は固定しない。添付ファイル、Excel、CSV、JSON、SharePoint、OneDriveなど、ユーザーが利用可能なソースを使う。
 
 ## 入力
@@ -75,19 +76,21 @@ python scripts/aggregate_records.py --files <input.xlsx|input.csv|input.json> \
 推奨 KPI と定義は `references/kpi_catalog.md`、入力形式と列対応の問題は
 `references/troubleshooting.md` を参照する。
 
-### Step 6: Markdownレポートを作成
+### Step 6: インタラクティブHTMLレポートを作成
 
-`references/fact_md_template.md` を基に、`output/<イベント名>_開催レポート.md` を作る。
-各数値に取得元、集計基準日、母数、除外条件を付け、確認できない項目は「未確認」とする。
+`references/fact_md_template.md` の事実・根拠構造を入力台帳として使い、`catalog:interactive-report` を呼び出して
+`output/<イベント名>_開催レポート.html` を作る。KPIカード、時系列、属性別比較、検索・絞り込み、出典一覧を、
+データ量とイベント目的に応じて選ぶ。各数値に取得元、集計基準日、母数、除外条件を付け、確認できない項目は
+「未確認」とする。グラフと表は同じ集計結果から生成し、自己完結性と表示を検証する。
 
 ### Step 7: 検証して提示
 
 入力件数と集計後の母数、内訳合計、重複・欠損を照合する。公開範囲に不要な個人情報を除き、
-成果物と使用したソース一覧をユーザーに提示する。追加のHTML化は明示依頼がある場合だけ行う。
+HTML成果物を開いて検索、絞り込み、グラフ、リンク、印刷表示を確認し、使用したソース一覧とともに提示する。
 
 ## 成果物
 
-- `output/<イベント名>_開催レポート.md` — KPI、事実、所見、出典、データ前提
+- `output/<イベント名>_開催レポート.html` — KPI、事実、所見、出典、データ前提を含む自己完結型レポート
 - `working/kpi.json` — 再計算可能な集計結果（必要な場合のみ）
 
 ## Guardrails

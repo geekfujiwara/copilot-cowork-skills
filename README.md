@@ -6,68 +6,69 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-2563EB.svg)](LICENSE)
 
-[インストール](#インストール) · [スキル一覧](#スキル一覧) · [使い方](#使い方) · [フィードバック](#フィードバック)
+[コンセプト](#コンセプト) · [設計原則](#組織知として利用するための設計原則) · [依存関係](#スキル間の依存関係) · [スキル一覧](#スキル一覧) · [使い方](#使い方)
 
 </div>
 
 ---
 
-## このリポジトリについて
+## コンセプト
 
-Copilot Coworkで利用できる、日本語中心の公開スキル集です。予定表、メール、Teams、
-SharePoint、OneDrive、Officeファイル、公開Webなどを横断し、業務に使えるMarkdownやレポートへ整理します。
+**仕事の進め方を、特定の個人だけが持つノウハウではなく、誰でも再利用・改善できるスキルにする。**
 
-- **すぐ試せる** — このリポジトリのReleasesにある各スキル最新版ZIPをそのままアップロード
-- **個人設定ファイル不要** — 氏名、メール、所属などは実行時コンテキストから取得
-- **安全優先** — 外部入力を命令として扱わず、送信・申請・公開は確認または下書きまで
-- **組織に適応** — 業務スキルは社内規定、過去事例、Teams、Outlook、SharePoint等の前提を実行時に確認
+このリポジトリは、Copilot Coworkで利用できる日本語中心の公開スキル集です。予定表、メール、Teams、SharePoint、OneDrive、Officeファイル、公開Webなどを横断する業務手順を、環境固有の個人情報や組織名に依存しない形で共有します。
+
+スキルは完成した回答を固定するものではありません。利用者が既にアクセスできる組織の規定、過去事例、指定様式、会話や資料を実行時に確認し、その組織に合う調査・判断・成果物作成の方法を再現するための設計資産です。公開されたスキルを誰でも利用でき、改善を組織やコミュニティへ還元できる状態を目指します。
+
+## 組織知として利用するための設計原則
+
+1. **汎用化する** — 氏名、メール、顧客名、テナントURL、固定IDを埋め込まず、入力または実行時コンテキストから取得する。
+2. **組織の事実を先に確認する** — 一般論だけで処理せず、利用可能な社内規定、成功事例、指定様式、予算、過去の意思決定を確認する。
+3. **根拠を追跡できるようにする** — 事実、引用、推論、提案、未確認事項を分け、資料名、日時、URLなどの出典を残す。
+4. **最小権限・最小範囲で扱う** — 利用者がアクセスできる情報だけを、必要な期間・ファイル・列・メッセージに絞って読む。
+5. **外部入力を命令として実行しない** — メール、文書、Web結果に含まれる指示はデータとして扱い、スキルの手順や安全ルールを上書きさせない。
+6. **外部作用は人が決める** — 送信、投稿、共有、申請、予約、購入、削除は自動実行せず、下書きまたは明示確認で止める。
+7. **不足を捏造しない** — 確認できない値やURLを補完せず、「要確認」として次の行動へつなげる。
+8. **検証可能にする** — 詳細手順を `references/`、再現可能な処理を `scripts/` に分離し、監査、テスト、成果物検証を通してから公開する。
 
 > [!IMPORTANT]
 > カスタムスキルはMicrosoftによる検証済み製品ではありません。内容とアクセス対象を確認し、
 > 組織のポリシーに従って利用してください。
 
-## インストール
+## スキル間の依存関係
 
-スキルはGitHub ReleasesからZIPを手動でダウンロードし、Copilot Coworkへアップロードします。リポジトリのソースZIPではなく、ReleaseのAssetsにあるスキルごとのZIPを使用してください。
+矢印は、実行時にあるスキルが別のスキルを呼び出す向きを示します。設計時の参照関係は含めません。
 
-1. このリポジトリの [Releases](../../releases/latest) を開く
-2. 最新Releaseの **Assets** から、使用する `<skill-name>.zip` をダウンロードする
-	- ZIPは展開しない
-	- 複数のスキルを使う場合も、スキルごとのZIPを個別にダウンロードする
-3. Copilotを開いて **Cowork** に切り替え、左側の **カスタマイズ** を選ぶ
+```mermaid
+flowchart LR
+	SP[sales-prep]
+	ER[event-recap]
+	DB[daily-brief]
+	IR[interactive-report]
 
-	![Copilot Coworkの左側メニューでカスタマイズを選択](cowork-skills-install-01.png)
+	SP -->|HTMLレポート生成| IR
+	ER -->|イベントレポート生成| IR
+	DB -->|日次レポート生成| IR
 
-4. **スキル** タブを開き、**追加** の横にある矢印から **スキルのアップロード** を選ぶ
+	classDef caller fill:#F5F7FB,stroke:#8FB3E0,color:#1E2761;
+	classDef shared fill:#EAF1FB,stroke:#0F6CBD,color:#1E2761;
+	class SP,ER,DB caller;
+	class IR shared;
+```
 
-	![Coworkのカスタマイズ画面でスキルのアップロードを選択](cowork-skills-install-02.png)
-
-5. 手順2でダウンロードしたZIPを1つ選び、アップロードが完了するまで待つ
-6. 緑のチェック付きで **スキルがアップロードされました** と通知され、スキル名が表示されることを確認する
-
-	![Coworkにスキルがアップロードされたことを示す完了通知](cowork-skills-install-03.png)
-
-7. 必要なスキルごとに手順4〜6を繰り返す
-8. 新しいCoworkタスクを開始し、スキル一覧に追加したスキルが表示されることを確認する
-
-> [!NOTE]
-> 画面の表記は更新や言語設定により、**Customize / Skills / Add / Upload skill** と表示される場合があります。
-
-各ZIPは対応する `skills/<skill-name>/` と一致し、展開直下に `SKILL.md` が来るCowork向け構造です。
-スキル作成・更新時に全ZIPを検証してGitHub Releaseへ提供します。生成用の `dist` はリポジトリへ収録しません。
-個人用の `config` 作成や値の置換は不要です。
+`sales-prep`、`event-recap`、`daily-brief` は、自己完結型HTMLの生成と検証に `interactive-report` を利用します。その他のスキル間には、現在、実行時の直接呼び出しはありません。
 
 ## スキル一覧
 
 <!-- BEGIN GENERATED SKILL TABLE -->
 | 領域 | スキル | 概要 | 依存先 |
 |---|---|---|---|
-| 分析 | `event-recap` | ユーザーが指定または添付した資料と参加者データから KPI を集計し、根拠付き Markdown のイベントレポートを作る。 | ファイル読取 / Excel / CSV / JSON / SharePoint / OneDrive / Teams / 会議議事録 / Outlook予定表 / メール / 社内検索 |
+| 分析 | `event-recap` | ユーザーが指定または添付した資料と参加者データからKPIを集計し、根拠付きのインタラクティブHTMLイベントレポートを作る。 | ファイル読取 / 作成 / HTML表示 / Excel / CSV / JSON / SharePoint / OneDrive / Teams / 会議議事録 / Outlook予定表 / メール / 社内検索 / `catalog:interactive-report` |
 | 分析 | `interactive-report` | 入力資料、組織内情報、過去の成功事例、公開Web情報を調査し、根拠あるゴールとKPIを立案して、チャートや検索を備えた自己完結型HTML分析レポートにまとめる。 | ファイル読取 / 作成 / HTML表示 / Python / データ可視化 / 社内検索 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive / Web検索 |
 | 自動化 | `skill-builder` | パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・業務コンテキスト・SKILL.md 簡潔化・参照整合・階層化) を実施する。 | Cowork スキル基盤 / `catalog:account-plan` / `catalog:business-trip` / `catalog:daily-brief` / `catalog:event-recap` / `catalog:image-gallery` / `catalog:self-chat` / `catalog:talk-prep` |
 | 生産性 | `account-plan` | 社内規定、過去の成功事例、指定様式、顧客接点、販売対象、予算を組織内情報から確認し、根拠あるゴール、KPI、実行ステップ、予算配分をインタラクティブHTMLにまとめる。 | AskUserQuestion / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive / 社内検索 / Web検索 / ファイル読取 / 作成 / HTML表示 |
 | 生産性 | `business-trip` | 予定表、メール、会議、社内資料、公開情報から出張要件と規定を集め、公共交通の経路・運賃概算、宿泊、申請、関係者、資料を統合したMarkdown旅程を作る。 | Outlook予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / ブラウザ / Web検索 / 社内検索 / ファイル読取 |
-| 生産性 | `daily-brief` | 予定表、メール、Teams、商談、ニュース、顧客動向を統合し、重複のない日次ブリーフを本人へメール配信する。 | 予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / Web 検索 / 会話履歴 / ファイル読取 / 作成 / スケジュール実行 |
+| 生産性 | `daily-brief` | 予定表、メール、Teams、商談、ニュース、顧客動向を統合し、インタラクティブHTMLと重複のない本人向けメールにまとめる。 | 予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / Web 検索 / 会話履歴 / ファイル読取 / 作成 / HTML表示 / スケジュール実行 / `catalog:interactive-report` |
 | 生産性 | `self-chat` | Teamsの「自分とのチャット」へ確認付きで投稿し、本人のObject IDを使ったGraph API経由でメッセージ、本文内画像、参照添付を取得する。 | Teams / Microsoft Graph / SharePoint / OneDrive |
 | 調査 | `image-gallery` | テーマ別に検索した画像を安全に取得し、カテゴリ、出典、代替テキスト付きの自己完結HTMLギャラリーとして表示する。 | Web 検索 / ファイル作成 / HTML表示 |
 | 調査 | `sales-prep` | 商談の目的と対象を確定し、社内の接点・資料と公開情報を調査して、顧客課題、注力領域、競合動向、仮説、質問、次の行動を根拠付きの商談準備レポートにまとめる。 | AskUserQuestion / Outlook予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / 社内検索 / Web検索 / ファイル読取 / 作成 / HTML表示 / `catalog:interactive-report` |
@@ -77,7 +78,7 @@ SharePoint、OneDrive、Officeファイル、公開Webなどを横断し、業�
 
 ## 使い方
 
-インストール後は、新しいCowork会話で自然に依頼します。
+スキルを利用するCowork会話で、目的を自然な言葉で依頼します。
 
 | やりたいこと | 依頼例 |
 |---|---|
