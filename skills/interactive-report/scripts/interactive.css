@@ -1,0 +1,296 @@
+/* ============================================================
+    interactive.css — interactive-report extension layer
+    report.css の後ろに読み込むこと（トークンを継承）。
+    単体では動作しない。interactive_report.py が両方を埋め込む。
+   ------------------------------------------------------------
+   重要ルール:
+   幅・高さ・上下 margin を効かせる要素には必ず display を明示する。
+   <span> はインライン要素なので width/height が無視され、
+   バーやプログレスが「描画されない」不具合になる。
+   ============================================================ */
+
+html { scroll-behavior: smooth; }
+body { padding-block-end: 40px; }
+
+/* ── アンカー（スティッキーナビ分のオフセット） ────────────── */
+.gh-anchor { display: block; position: relative; block-size: 0; inset-block-start: -60px; }
+
+/* ── スティッキーナビ ──────────────────────────────────── */
+.gh-nav {
+  position: sticky; inset-block-start: 0; z-index: 100;
+  background: rgba(18,41,82,0.96);
+  backdrop-filter: blur(8px);
+  border-block-end: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+}
+.gh-nav-inner {
+  max-inline-size: var(--gh-max-w); margin-inline: auto;
+  display: flex; align-items: center; gap: 4px;
+  padding-inline: 16px; overflow-x: auto; scrollbar-width: thin;
+}
+.gh-nav a {
+  color: rgba(255,255,255,0.78); text-decoration: none;
+  font-size: 14px; font-weight: 600; white-space: nowrap;
+  padding: 13px 12px; border-block-end: 3px solid transparent;
+  transition: color .18s ease, border-color .18s ease, background .18s ease;
+}
+.gh-nav a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+.gh-nav a.active { color: #fff; border-block-end-color: var(--gh-hl); }
+.gh-nav .gh-nav-spacer { flex: 1 1 auto; }
+.gh-iconbtn {
+  background: rgba(255,255,255,0.10); color: #fff;
+  border: 1px solid rgba(255,255,255,0.18); border-radius: 999px;
+  font-family: var(--gh-font); font-size: 13px; font-weight: 600;
+  padding: 6px 13px; cursor: pointer; white-space: nowrap;
+  transition: background .18s ease, transform .12s ease;
+}
+.gh-iconbtn:hover { background: rgba(255,255,255,0.22); }
+.gh-iconbtn:active { transform: scale(.96); }
+
+/* ── ツールバー（検索＋フィルターチップ） ──────────────────── */
+.gh-toolbar {
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  background: var(--gh-card-bg); border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius); padding: 12px 14px;
+  margin-block-end: var(--gh-gap); box-shadow: var(--gh-shadow);
+}
+.gh-search {
+  flex: 1 1 220px; min-inline-size: 180px;
+  font-family: var(--gh-font); font-size: 14px; color: var(--gh-text);
+  background: var(--gh-card-bg2); border: 1px solid var(--gh-border);
+  border-radius: 999px; padding: 8px 14px; outline: none;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.gh-search:focus { border-color: var(--gh-navy-light); box-shadow: 0 0 0 3px rgba(42,82,152,0.15); }
+.gh-chip {
+  font-family: var(--gh-font); font-size: 13px; font-weight: 600;
+  color: var(--gh-navy); background: var(--gh-card-bg2);
+  border: 1px solid var(--gh-border); border-radius: 999px;
+  padding: 6px 13px; cursor: pointer; transition: all .18s ease;
+}
+.gh-chip:hover { border-color: var(--gh-navy-light); transform: translateY(-1px); }
+.gh-chip.on { background: var(--gh-navy); color: #fff; border-color: var(--gh-navy); }
+.gh-chip.on.hl { background: var(--gh-hl); border-color: var(--gh-hl); }
+.gh-count { font-size: 13px; color: var(--gh-text-muted); margin-inline-start: auto; white-space: nowrap; }
+.gh-empty { display: none; text-align: center; color: var(--gh-text-muted); font-size: 14px; padding: 26px; }
+.gh-empty.on { display: block; }
+
+/* ── アコーディオン ────────────────────────────────────── */
+.gh-acc { display: flex; flex-direction: column; gap: 10px; }
+.gh-item {
+  background: var(--gh-card-bg); border: 1px solid var(--gh-border);
+  border-inline-start: 4px solid var(--gh-navy); border-radius: var(--gh-radius);
+  box-shadow: var(--gh-shadow); overflow: hidden;
+  transition: box-shadow .2s ease, transform .2s ease;
+}
+.gh-item:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(27,58,107,0.16); }
+.gh-item.accent { border-inline-start-color: var(--gh-hl); }
+.gh-item.hidden { display: none; }
+.gh-item-head {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 14px 16px; cursor: pointer; user-select: none;
+}
+.gh-item-head:hover { background: var(--gh-card-bg2); }
+.gh-item-name { font-size: 17px; font-weight: 700; color: var(--gh-navy-dark); }
+.gh-item-meta { font-size: 14px; color: var(--gh-text); flex: 1 1 240px; min-inline-size: 160px; }
+.gh-item-right { font-size: 14px; font-weight: 700; color: var(--gh-hl); font-variant-numeric: tabular-nums; }
+.gh-caret {
+  display: inline-block; font-size: 13px; color: var(--gh-text-muted);
+  margin-inline-start: 4px; transition: transform .22s ease;
+}
+.gh-item.open .gh-caret { transform: rotate(90deg); }
+/* grid-template-rows 0fr→1fr で高さ未知のままアニメーションできる */
+.gh-item-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .28s ease; }
+.gh-item.open .gh-item-body { grid-template-rows: 1fr; }
+.gh-item-body > div { overflow: hidden; }
+.gh-item-inner { padding: 0 16px 16px; border-block-start: 1px solid var(--gh-border-lt); }
+
+.gh-block { margin-block-start: 14px; }
+.gh-block-t {
+  font-size: 13px; font-weight: 700; letter-spacing: .04em;
+  color: var(--gh-navy); text-transform: uppercase; margin-block-end: 5px;
+}
+.gh-block-b { font-size: 14px; line-height: 1.75; color: var(--gh-text); }
+.gh-block-b.impact {
+  background: var(--gh-card-bg2); border-inline-start: 3px solid var(--gh-hl);
+  border-radius: var(--gh-radius-sm); padding: 10px 12px;
+}
+.gh-subgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 12px; }
+.gh-taglist { display: flex; flex-wrap: wrap; gap: 6px; margin-block-start: 6px; }
+.gh-tag {
+  display: inline-block; font-size: 13px;
+  background: var(--gh-green-bg); color: var(--gh-green);
+  border: 1px solid rgba(46,125,50,.25); border-radius: 999px; padding: 4px 11px;
+}
+
+/* ── タイムライン ─────────────────────────────────────── */
+.gh-tl { position: relative; padding-inline-start: 26px; }
+.gh-tl::before {
+  content: ''; position: absolute; inset-inline-start: 8px; inset-block: 6px;
+  inline-size: 2px; background: linear-gradient(180deg, var(--gh-navy-light), var(--gh-hl));
+}
+.gh-tl-row {
+  position: relative; display: flex; gap: 12px; align-items: baseline;
+  padding: 9px 12px; margin-block-end: 6px; border-radius: var(--gh-radius-sm);
+  background: var(--gh-card-bg); border: 1px solid var(--gh-border-lt);
+  transition: background .18s ease, transform .18s ease;
+}
+.gh-tl-row:hover { background: var(--gh-card-bg2); transform: translateX(3px); }
+.gh-tl-row::before {
+  content: ''; position: absolute; inset-inline-start: -22px; inset-block-start: 16px;
+  inline-size: 10px; block-size: 10px; border-radius: 50%;
+  background: var(--gh-navy); border: 2px solid var(--gh-card-bg);
+}
+.gh-tl-row.accent::before { background: var(--gh-hl); box-shadow: 0 0 0 4px rgba(200,63,44,.18); }
+.gh-tl-date {
+  display: block; font-weight: 700; color: var(--gh-hl); font-size: 15px;
+  min-inline-size: 46px; font-variant-numeric: tabular-nums;
+}
+.gh-tl-text { font-size: 14px; color: var(--gh-text); }
+
+/* ── タブ ─────────────────────────────────────────────── */
+.gh-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-block-end: 12px; }
+.gh-tab {
+  font-family: var(--gh-font); font-size: 14px; font-weight: 600;
+  color: var(--gh-navy); background: transparent;
+  border: 1px solid var(--gh-border); border-radius: 999px;
+  padding: 7px 16px; cursor: pointer; transition: all .18s ease;
+}
+.gh-tab:hover { background: var(--gh-card-bg2); }
+.gh-tab.on { background: var(--gh-navy); color: #fff; border-color: var(--gh-navy); }
+.gh-panel { display: none; animation: gh-fade .28s ease; }
+.gh-panel.on { display: block; }
+@keyframes gh-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ── チェックリスト ───────────────────────────────────── */
+.gh-checklist { display: block; }
+.gh-check {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: var(--gh-card-bg); border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius); padding: 12px 14px; margin-block-end: 8px;
+  transition: background .18s ease, opacity .18s ease;
+}
+.gh-check:hover { background: var(--gh-card-bg2); }
+.gh-check input {
+  flex: none; inline-size: 18px; block-size: 18px;
+  margin-block-start: 2px; cursor: pointer; accent-color: #1B3A6B;
+}
+.gh-check-main { display: block; flex: 1 1 auto; }
+.gh-check-text { display: block; font-size: 14px; line-height: 1.7; color: var(--gh-text); }
+.gh-check-meta { display: block; font-size: 13px; color: var(--gh-text-muted); margin-block-start: 4px; }
+.gh-check.done { opacity: .5; }
+.gh-check.done .gh-check-text { text-decoration: line-through; }
+.gh-progress-wrap { margin-block-end: 12px; }
+.gh-progress-label { font-size: 14px; color: var(--gh-text-muted); margin-block-end: 6px; }
+
+/* ── 横棒グラフ ───────────────────────────────────────── */
+/* すべて display 明示: <span> のままだと width が効かず棒が消える */
+.gh-bar-row { display: flex; align-items: center; gap: 10px; margin-block-end: 10px; }
+.gh-bar-label { display: block; flex: 0 0 auto; inline-size: 130px; font-size: 14px; color: var(--gh-text); }
+.gh-bar-track {
+  display: block; flex: 1 1 auto; min-inline-size: 60px; block-size: 22px;
+  background: var(--gh-border-lt); border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-sm); overflow: hidden;
+}
+.gh-bar-fill {
+  display: block; block-size: 100%; inline-size: 0;
+  border-radius: var(--gh-radius-sm);
+  background: linear-gradient(90deg, var(--gh-navy-light), var(--gh-navy));
+  transition: inline-size .9s cubic-bezier(.25,.8,.3,1);
+}
+.gh-bar-fill.hl { background: linear-gradient(90deg, var(--gh-hl-alt), var(--gh-hl)); }
+.gh-bar-val {
+  display: block; flex: 0 0 auto; inline-size: 90px; text-align: end;
+  font-size: 14px; font-weight: 700; color: var(--gh-navy-dark);
+  font-variant-numeric: tabular-nums;
+}
+.gh-bar-note { font-size: 13px; color: var(--gh-text-muted); margin: -5px 0 12px 140px; }
+
+/* ── 分析チャート（SVG、外部ライブラリなし） ─────────────── */
+.gh-chart-card { padding: 16px; overflow-x: auto; }
+.gh-chart-lead, .gh-chart-note {
+  margin: 0 0 10px; color: var(--gh-text-muted); font-size: 13px; line-height: 1.6;
+}
+.gh-chart-note { margin: 8px 0 0; }
+.gh-chart {
+  display: block; inline-size: 100%; min-inline-size: 560px; block-size: auto;
+  font-family: var(--gh-font); color: var(--gh-text);
+}
+.gh-bubble-chart, .gh-gantt-chart, .gh-map-chart, .gh-line-chart, .gh-bar-chart {
+  position: relative;
+}
+.gh-axis { stroke: var(--gh-border); stroke-width: 1.5; }
+.gh-axis-label { fill: var(--gh-text); font-size: 13px; font-weight: 700; text-anchor: middle; }
+.gh-tick { fill: var(--gh-text-muted); font-size: 11px; }
+.gh-chart-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-block-end: 8px; }
+.gh-chart-legend span { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--gh-text); }
+.gh-chart-legend i { display: inline-block; inline-size: 10px; block-size: 10px; border-radius: 50%; }
+.gh-bubble { cursor: help; }
+.gh-bubble circle { stroke: var(--gh-card-bg); stroke-width: 2; transition: opacity .15s, stroke-width .15s; }
+.gh-bubble text { fill: #fff; font-size: 10px; font-weight: 700; pointer-events: none; }
+.gh-bubble:hover circle, .gh-bubble:focus circle { opacity: .9; stroke-width: 4; }
+.gh-gantt-label { fill: var(--gh-text); font-size: 12px; font-weight: 600; }
+.gh-gantt-owner { fill: #fff; font-size: 10px; font-weight: 700; pointer-events: none; }
+.gh-gantt-task { cursor: help; }
+.gh-gantt-task rect { transition: opacity .15s; }
+.gh-gantt-task:hover rect, .gh-gantt-task:focus rect { opacity: .78; }
+.gh-map-water { fill: var(--gh-bg); stroke: var(--gh-border); }
+.gh-map-land { fill: var(--gh-border-lt); stroke: var(--gh-border); stroke-width: 1.2; }
+.gh-map-grid { fill: none; stroke: var(--gh-border); stroke-width: .6; opacity: .65; }
+.gh-map-marker { cursor: help; }
+.gh-map-marker circle { fill: var(--gh-hl); stroke: var(--gh-card-bg); stroke-width: 3; }
+.gh-map-marker text { fill: var(--gh-text); font-size: 11px; font-weight: 700; paint-order: stroke; stroke: var(--gh-card-bg); stroke-width: 3px; }
+.gh-map-marker:hover circle, .gh-map-marker:focus circle { fill: var(--gh-navy-light); }
+.gh-line-series { fill: currentColor; stroke: currentColor; }
+.gh-line-series polyline { fill: none; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.gh-line-series circle { stroke: var(--gh-card-bg); stroke-width: 2; cursor: help; }
+
+/* ── リンクリスト（引用・出典） ───────────────────────── */
+.gh-linkrow {
+  display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline;
+  padding: 9px 12px; border-block-end: 1px solid var(--gh-border-lt); font-size: 14px;
+}
+.gh-linkrow:hover { background: var(--gh-card-bg2); }
+.gh-linkrow-cat { display: block; font-weight: 700; color: var(--gh-navy-dark); min-inline-size: 120px; }
+.gh-linkrow a { color: var(--gh-navy-light); text-decoration: none; word-break: break-all; }
+.gh-linkrow a:hover { text-decoration: underline; color: var(--gh-hl); }
+
+/* ── スクロール連動の出現アニメーション ─────────────────── */
+.gh-reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+.gh-reveal.in { opacity: 1; transform: none; }
+
+/* ── トップへ戻る ─────────────────────────────────────── */
+.gh-totop {
+  position: fixed; inset-inline-end: 18px; inset-block-end: 18px; z-index: 200;
+  inline-size: 42px; block-size: 42px; border-radius: 50%;
+  background: var(--gh-navy); color: #fff; border: none; cursor: pointer;
+  font-size: 18px; box-shadow: 0 4px 14px rgba(0,0,0,.25);
+  opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .18s ease;
+}
+.gh-totop.show { opacity: .92; pointer-events: auto; }
+.gh-totop:hover { transform: translateY(-3px); opacity: 1; }
+
+/* ── モーション低減設定の尊重 ─────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .gh-reveal { opacity: 1; transform: none; transition: none; }
+  .gh-bar-fill, .gh-progress-fill, .gh-item-body { transition: none; }
+}
+
+/* ── 印刷 ─────────────────────────────────────────────── */
+@media print {
+  .gh-nav, .gh-toolbar, .gh-totop, .gh-tabs { display: none !important; }
+  .gh-item-body { grid-template-rows: 1fr !important; }
+  .gh-reveal { opacity: 1 !important; transform: none !important; }
+  .gh-panel { display: block !important; }
+  .gh-bar-fill, .gh-progress-fill {
+    print-color-adjust: exact; -webkit-print-color-adjust: exact;
+  }
+  .gh-chart { min-inline-size: 0; break-inside: avoid; }
+}
+
+@media (max-width: 640px) {
+  .gh-item-head { gap: 6px; }
+  .gh-bar-label { inline-size: 92px; font-size: 13px; }
+  .gh-bar-note { margin-inline-start: 102px; }
+}
