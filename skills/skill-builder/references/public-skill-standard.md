@@ -8,7 +8,7 @@
 - `catalog:business-trip`: 組織規定、申請経路、過去実績、公開情報を区別する計画
 - `catalog:daily-brief`: 継続会話、単一履歴、差分配信、重複防止、スケジュール実行
 - `catalog:event-recap`: 複数入力形式、KPI定義、母数・欠損・根拠の検算
-- `catalog:talk-prep`: 組織の指定様式、過去成功パターン、下書きで止める外部作用
+- `catalog:session-prep`: 組織の指定様式、過去成功パターン、下書きで止める外部作用
 - `catalog:image-gallery`: 安全な取得、入力検証、自己完結HTML
 - `catalog:self-chat`: 最小権限、本人限定、送信確認
 
