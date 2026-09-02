@@ -105,3 +105,8 @@ report.save("working/report.html")
 - PowerPoint、Word、Excel、PDFが主成果物
 - 法務、財務、人事等の専門判断や最終意思決定そのものが主目的
 - Webアプリケーションや公開サイトの開発
+
+---
+
+作成: **Geek Fujiwara**
+本スキルは **MIT License** の下で利用できます。

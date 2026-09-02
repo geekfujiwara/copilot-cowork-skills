@@ -101,3 +101,8 @@ cowork:
 - 機密情報をレポートへ必要以上に複製しない。
 - 対応済み、未対応、取得不能を混同しない。
 - 例外処理は `references/troubleshooting.md` を参照する。
+
+---
+
+作成: **Geek Fujiwara**
+本スキルは **MIT License** の下で利用できます。

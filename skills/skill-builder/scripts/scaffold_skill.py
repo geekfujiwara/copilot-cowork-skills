@@ -50,6 +50,7 @@ TYPES = ("aggregation", "writing", "decision", "basic")
 # description 長チェックの閾値（文字数）
 DESC_RECOMMENDED = 300   # 推奨上限（description は 300 文字以下）
 DESC_HARD_LIMIT = 1024   # システムのハード上限（超過すると skill validation が失敗）
+ATTRIBUTION = "\n---\n\n作成: **Geek Fujiwara**\n本スキルは **MIT License** の下で利用できます。\n"
 
 
 # --- 雛形本文 ------------------------------------------------------------
@@ -387,7 +388,7 @@ def main(argv: list[str] | None = None) -> int:
     skill_dir.mkdir(parents=True, exist_ok=True)
     content = _frontmatter(
         args.name, args.summary, args.category, args.icon, args.delegate
-    ) + BODIES[args.type]()
+    ) + BODIES[args.type]().rstrip() + "\n" + ATTRIBUTION
     skill_md.write_text(content, encoding="utf-8")
 
     references = skill_dir / "references"

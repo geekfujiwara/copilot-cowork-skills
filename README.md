@@ -4,6 +4,8 @@
 
 **仕事の調査・整理・準備を、再利用できるCoworkスキルに。**
 
+Created by **Geek Fujiwara** · Released under the **MIT License**
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-2563EB.svg)](LICENSE)
 
 [コンセプト](#コンセプト) · [設計原則](#組織知として利用するための設計原則) · [依存関係](#スキル間の依存関係) · [スキル一覧](#スキル一覧) · [使い方](#使い方)

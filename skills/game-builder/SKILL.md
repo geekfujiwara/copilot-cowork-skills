@@ -92,3 +92,8 @@ HTML、CSS、JavaScript、画像をローカルに置き、CDN、外部フォン
 - プレイヤー名は既定で任意の表示名とし、メールや社員IDを収集しない。
 - 外部送信、共有、公開、データストア作成は明示確認後に行う。
 - 例外処理は `references/troubleshooting.md` を参照する。
+
+---
+
+作成: **Geek Fujiwara**
+本スキルは **MIT License** の下で利用できます。

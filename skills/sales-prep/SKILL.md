@@ -98,3 +98,8 @@ HTMLを求められた場合は `catalog:interactive-report` の安全な自己�
 - 会議議事録の要約だけを行う
 - CRMへの入力、メール送信、会議設定だけを行う
 - PowerPoint、Word、Excelを主成果物として作成する
+
+---
+
+作成: **Geek Fujiwara**
+本スキルは **MIT License** の下で利用できます。
