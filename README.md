@@ -92,6 +92,7 @@ generalシリーズを含む各業務スキルは、自己完結型HTMLの生成
 | 生産性 | `message-triage` | 許可されたTeamsチャットとメールを横断し、期限、依頼、影響、未解決の約束を根拠に重要メッセージを整理する。 | Teams / チャット / Outlook / メール / 社内検索 / AskUserQuestion / ファイル作成 / HTML表示 / `catalog:interactive-report` |
 | 調査 | `general-research` | 任意のテーマについて社内情報、文書、会話、公開情報を横断調査し、確認済み事実、相違点、仮説、情報ギャップを出典付きで整理する。 | AskUserQuestion / 社内検索 / Web検索 / ファイル読取 / 作成 / Teams / 会議議事録 / Outlook / メール / SharePoint / OneDrive / HTML表示 / `catalog:interactive-report` |
 | 調査 | `sales-prep` | 商談の目的と対象を確定し、社内の接点・資料と公開情報を調査して、顧客課題、注力領域、競合動向、仮説、質問、次の行動を根拠付きの商談準備レポートにまとめる。 | AskUserQuestion / Outlook予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / 社内検索 / Web検索 / ファイル読取 / 作成 / HTML表示 / `catalog:interactive-report` |
+| 文書作成 | `game-builder` | 利用者のテーマ、資料、または許可された社内情報からゲーム化に適した題材を選び、画像素材、スコア、ローカルランキングを備えたブラウザゲームを作る。 | AskUserQuestion / 社内検索 / Web検索 / ファイル読取 / 作成 / Teams / 会議議事録 / SharePoint / OneDrive / 画像生成 / HTML / CSS / JavaScript / Python / ブラウザテスト / JSON |
 | 文書作成 | `powerpoint-builder` | 入力資料、組織内情報、公開情報を根拠にストーリーと視覚表現を設計し、編集可能なPowerPointを作成して内容・レイアウト・OOXML互換性を検証する。 | ファイル読取 / 作成 / PowerPoint / 画像生成 / 画像検索 / 取得 / Python / Node.js / Web検索 / 社内検索 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive |
 | 文書作成 | `session-prep` | 登壇依頼を読み、組織の規定と成功事例を確認して、シナリオ、タイトル、台本、スライド連携、返信下書きまでを支援する。 | 社内検索 / ファイル読取 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive |
 <!-- END GENERATED SKILL TABLE -->
@@ -113,6 +114,7 @@ generalシリーズを含む各業務スキルは、自己完結型HTMLの生成
 | 根拠ベースレビュー | 「この内容を組織の方針と成功事例に照らしてレビューして」 |
 | メッセージ整理 | 「今週の重要なメールとTeamsチャットを整理して、対応案を確認して」 |
 | スキル候補発見 | 「最近の業務を確認して、Coworkスキルにできそうな仕事を提案して」 |
+| ブラウザゲーム作成 | 「この研修資料を、スコアとランキング付きのブラウザゲームにして」 |
 
 Coworkが必要な情報へアクセスできない場合は、対象ファイルを会話へ添付するか、アクセス権のある保存場所を指定します。
 スキルは権限を迂回せず、確認できない情報を推測しません。
