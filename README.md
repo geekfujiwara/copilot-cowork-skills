@@ -8,7 +8,7 @@ Created by **Geek Fujiwara** · Released under the **MIT License**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-2563EB.svg)](LICENSE)
 
-[コンセプト](#コンセプト) · [設計原則](#組織知として利用するための設計原則) · [依存関係](#スキル間の依存関係) · [スキル一覧](#スキル一覧) · [使い方](#使い方)
+[コンセプト](#コンセプト) · [設計原則](#組織知として利用するための設計原則) · [依存関係](#スキル間の依存関係) · [スキル一覧](#スキル一覧) · [インストール](#インストール) · [使い方](#使い方)
 
 </div>
 
@@ -99,6 +99,20 @@ generalシリーズと `account-plan` を含む各業務スキルは、自己完
 | 文書作成 | `powerpoint-builder` | 入力資料、組織内情報、公開情報を根拠にストーリーと視覚表現を設計し、編集可能なPowerPointを作成して内容・レイアウト・OOXML互換性を検証する。 | ファイル読取 / 作成 / PowerPoint / 画像生成 / 画像検索 / 取得 / Python / Node.js / Web検索 / 社内検索 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive |
 | 文書作成 | `session-prep` | 登壇依頼を読み、組織の規定と成功事例を確認して、シナリオ、タイトル、台本、スライド連携、返信下書きまでを支援する。 | 社内検索 / ファイル読取 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive |
 <!-- END GENERATED SKILL TABLE -->
+
+## インストール
+
+公開されたスキルZIPは GitHub Releases から取得できます。
+
+- Releases: https://github.com/geekfujiwara/copilot-cowork-skills/releases
+- 各スキルは `account-plan.zip` / `daily-brief.zip` / `general-analysis.zip` のように個別のZIPとして配布されます。
+
+1. 上記の Releases ページで、利用したいスキルの ZIP をダウンロードします。
+2. Cowork のスキル管理またはカスタムスキルの追加画面で、ダウンロードした ZIP をインポートします。
+3. インポート後に対象スキルが一覧へ表示されることを確認し、必要に応じて組織ポリシーやアクセス範囲を確認してください。
+4. 複数のスキルを利用する場合は、必要な ZIP を個別にインストールしてください。
+
+スキル ZIP はソースコードと同一の内容を含み、`LICENSE` も同梱されます。利用前に、組織のガイドラインと対象データへのアクセス権を確認してください。
 
 ## 使い方
 
