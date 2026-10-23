@@ -38,7 +38,7 @@ REVIEWED_FONTS = {
     ("demo-video-editor", "assets/fonts/NotoSansJP-VariableFont_wght.ttf"): (
         "b81fe0ce33403cab3c68834f2ae081cb9b0ba55de427554e7e0437ac389fa105",
         "assets/fonts/OFL.txt",
-        "92c343f7e7caebff8bace350bc091b79755f4d0c8b70bb0df21570a1828917b8",
+        "2053744949540e32c4bc1e2cea901edf80102d694fe52b424f2769aa8fe8bec2",
     ),
 }
 # 除外してよい既知の技術ドメイン (XML 名前空間など)
