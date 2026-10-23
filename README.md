@@ -8,7 +8,7 @@ Created by **Geek Fujiwara** · Released under the **MIT License**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-2563EB.svg)](LICENSE)
 
-[コンセプト](#コンセプト) · [設計原則](#組織知として利用するための設計原則) · [依存関係](#スキル間の依存関係) · [スキル一覧](#スキル一覧) · [インストール](#インストール) · [使い方](#使い方)
+[コンセプト](#コンセプト) · [設計原則](#組織知として利用するための設計原則) · [スキル一覧](#スキル一覧) · [インストール](#インストール) · [使い方](#使い方)
 
 </div>
 
@@ -37,70 +37,176 @@ Created by **Geek Fujiwara** · Released under the **MIT License**
 > カスタムスキルはMicrosoftによる検証済み製品ではありません。内容とアクセス対象を確認し、
 > 組織のポリシーに従って利用してください。
 
-## スキル間の依存関係
+## スキル一覧
 
-矢印は、実行時にあるスキルが別のスキルを呼び出す向きを示します。設計時の参照関係は含めません。
+カテゴリごとに **Mermaid → 使い方 → Skill一覧** の順で紹介します。図の矢印は、入力から成果物までの利用イメージです。すべての工程を通る必要はなく、目的に合うスキルから始められます。
+
+点線は、利用者が必要に応じて成果物を別のスキルへ渡す任意の流れであり、自動呼び出しではありません。表の「主な連携・機能」には利用ツールや設計時の参照先も含みます。
+
+### 調査
 
 ```mermaid
 flowchart LR
-	SP[sales-prep]
-	DB[daily-brief]
-	GRS[general-research]
-	GA[general-analysis]
-	GV[general-review]
-	GP[general-planning]
-	MT[message-triage]
-	SF[skill-finder]
-	SB[skill-builder]
-	AP[account-plan]
-	BT[business-trip]
-	IR[interactive-report]
-
-	SP -->|HTMLレポート生成| IR
-	DB -->|日次レポート生成| IR
-	AP -->|アカウント計画を可視化| IR
-	GRS -->|調査結果を可視化| IR
-	GA -->|分析結果を可視化| IR
-	GV -->|レビューレポート生成| IR
-	GP -->|計画を可視化| IR
-	GP -->|顧客別販売計画| AP
-	GP -->|出張計画| BT
-	MT -->|整理結果レポート生成| IR
-	SF -->|候補比較を可視化| IR
-	SF -->|承認済み候補を引き渡し| SB
-
-	classDef caller fill:#F5F7FB,stroke:#8FB3E0,color:#1E2761;
-	classDef shared fill:#EAF1FB,stroke:#0F6CBD,color:#1E2761;
-	class SP,DB,AP,GRS,GA,GV,GP,MT,SF caller;
-	class IR shared;
-	class SB shared;
+	THEME["知りたいテーマ・確認事項"] --> GRS["general-research"]
+	DEAL["商談相手・会議の目的"] --> SP["sales-prep"]
+	GRS --> FINDINGS["出典付きの事実・仮説・不足"]
+	SP --> BRIEF["顧客課題・質問・次の行動"]
+	FINDINGS --> NEXT["分析や提案の材料へ"]
+	BRIEF --> NEXT
 ```
 
-generalシリーズと `account-plan` を含む各業務スキルは、自己完結型HTMLの生成と検証に `interactive-report` を利用します。`skill-finder` は利用者が承認した候補だけを `skill-builder` へ引き渡します。その他のスキル間には、現在、実行時の直接呼び出しはありません。
+#### 使い方
 
-## スキル一覧
+**知りたいテーマ・商談 → 社内外の根拠を収集 → 分析や提案の材料へ**
 
-<!-- BEGIN GENERATED SKILL TABLE -->
-| 領域 | スキル | 概要 | 依存先 |
+任意テーマなら `general-research`、具体的な商談準備なら `sales-prep` を使います。調査範囲と目的を指定し、出典と未確認事項を確認してから次の判断へ進みます。どちらもHTMLの可視化には分析カテゴリの `interactive-report` を利用します。
+
+#### Skill一覧
+
+| 領域 | スキル | 処理と成果物 | 主な連携・機能 |
+|---|---|---|---|
+| 調査 | `general-research` | 任意のテーマについて社内情報、文書、会話、公開情報を横断調査し、確認済み事実、相違点、仮説、情報ギャップを出典付きで整理する。 | AskUserQuestion / 社内検索 / Web検索 / ファイル読取 / 作成 / Teams / 会議議事録 / Outlook / メール / SharePoint / OneDrive / HTML表示 / `catalog:interactive-report` |
+| 調査 | `sales-prep` | 商談の目的と対象を確定し、社内の接点・資料と公開情報を調査して、顧客課題、注力領域、競合動向、仮説、質問、次の行動を根拠付きの商談準備レポートにまとめる。 | AskUserQuestion / Outlook予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / 社内検索 / Web検索 / ファイル読取 / 作成 / HTML表示 / `catalog:interactive-report` |
+
+### 分析
+
+```mermaid
+flowchart LR
+	DATA["Excel・CSV・JSON・文書"] --> GA["general-analysis"]
+	PLAN["企画・提案・設計・評価基準"] --> GV["general-review"]
+	GA -->|分析結果を可視化| IR["interactive-report"]
+	GV -->|評価結果を可視化| IR
+	SOURCES["資料・調査結果から直接"] --> IR
+	IR --> HTML["チャート・検索付きHTMLレポート"]
+```
+
+#### 使い方
+
+**集めたデータ・企画・資料 → 比較・評価・検証 → 判断できるレポートへ**
+
+数値や複数資料の統合は `general-analysis`、基準に照らす評価は `general-review` を使います。可視化を中心に依頼する場合は `interactive-report` から直接始められます。
+
+#### Skill一覧
+
+| 領域 | スキル | 処理と成果物 | 主な連携・機能 |
 |---|---|---|---|
 | 分析 | `general-analysis` | 単一または複数ソースの構造化／半構造化／文書データを統合し、品質、集計、比較、傾向、関係性、異常、仮説を根拠付きで分析する。 | AskUserQuestion / ファイル読取 / 作成 / Excel / CSV / TSV / JSON / 文書 / PowerPoint / PDF / SharePoint / OneDrive / Teams / 会議議事録 / Outlook / メール / 社内検索 / Web検索 / Python / データ分析 / HTML表示 / `catalog:interactive-report` |
 | 分析 | `general-review` | 企画、提案、計画、プロセス、成果物、文書、設計、施策など任意の対象を、組織の基準と確認可能な成功事例に照らしてレビューする。 | AskUserQuestion / 社内検索 / Web検索 / ファイル読取 / 作成 / Teams / 会議議事録 / SharePoint / OneDrive / HTML表示 / `catalog:interactive-report` |
 | 分析 | `interactive-report` | 入力資料、組織内情報、過去の成功事例、公開Web情報を調査し、根拠あるゴールとKPIを立案して、チャートや検索を備えた自己完結型HTML分析レポートにまとめる。 | ファイル読取 / 作成 / HTML表示 / Python / データ可視化 / 社内検索 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive / Web検索 |
-| 自動化 | `skill-builder` | パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・業務コンテキスト・SKILL.md 簡潔化・参照整合・階層化) を実施する。 | Cowork スキル基盤 / `catalog:account-plan` / `catalog:business-trip` / `catalog:daily-brief` / `catalog:general-analysis` / `catalog:general-planning` / `catalog:general-research` / `catalog:general-review` / `catalog:interactive-report` / `catalog:session-prep` |
-| 自動化 | `skill-finder` | 許可された最近の予定、メール、チャット、会議、文書を最小範囲で確認し、反復性と組織価値からCoworkスキル化候補を提案する。 | AskUserQuestion / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive / 社内検索 / ファイル読取 / 作成 / HTML表示 / `catalog:interactive-report` / `catalog:skill-builder` |
+
+### 生産性
+
+```mermaid
+flowchart LR
+	GOAL["目的・組織の方針・制約"] --> GP["general-planning"]
+	GP --> ROADMAP["ゴール・KPI・実行計画"]
+	GP -->|顧客別に具体化| AP["account-plan"]
+	GP -->|出張計画に具体化| BT["business-trip"]
+	AP --> ACCOUNT["顧客別の販売計画"]
+	BT --> TRIP["Markdown旅程"]
+	SCHEDULE["予定・ニュース・顧客動向"] --> DB["daily-brief"]
+	DB --> TODAY["今日の優先事項・本人向けメール"]
+	MESSAGES["メール・Teamsの連絡"] --> MT["message-triage"]
+	MT --> ACTIONS["重要メッセージ・対応案"]
+```
+
+#### 使い方
+
+**目標・予定・連絡 → 優先順位と制約を整理 → 実行できる計画・次の行動へ**
+
+汎用計画から顧客別計画・出張旅程へ具体化できます。日次整理とメッセージ整理は、必要に応じて単独で始められます。
+
+`account-plan` や `business-trip` に直接依頼することもできます。`general-planning`、`account-plan`、`daily-brief`、`message-triage` はHTMLの可視化に `interactive-report` を利用します。
+
+#### Skill一覧
+
+| 領域 | スキル | 処理と成果物 | 主な連携・機能 |
+|---|---|---|---|
 | 生産性 | `account-plan` | 社内規定、過去の成功事例、指定様式、顧客接点、販売対象、予算を組織内情報から確認し、根拠あるゴール、KPI、実行ステップ、予算配分をインタラクティブHTMLにまとめる。 | AskUserQuestion / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive / 社内検索 / Web検索 / ファイル読取 / 作成 / HTML表示 / `catalog:interactive-report` |
 | 生産性 | `business-trip` | 予定表、メール、会議、社内資料、公開情報から出張要件と規定を集め、公共交通の経路・運賃概算、宿泊、申請、関係者、資料を統合したMarkdown旅程を作る。 | Outlook予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / ブラウザ / Web検索 / 社内検索 / ファイル読取 |
 | 生産性 | `daily-brief` | 予定表、メール、Teams、商談、ニュース、顧客動向を統合し、インタラクティブHTMLと重複のない本人向けメールにまとめる。 | 予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / Web 検索 / 会話履歴 / ファイル読取 / 作成 / HTML表示 / スケジュール実行 / `catalog:interactive-report` |
 | 生産性 | `general-planning` | 任意の取り組みについて、組織の方針、現状、成功事例、制約からゴール、KPI、ロードマップ、責任、リスクを設計する。 | AskUserQuestion / 社内検索 / Web検索 / ファイル読取 / 作成 / Teams / 会議議事録 / Outlook / メール / SharePoint / OneDrive / HTML表示 / `catalog:account-plan` / `catalog:business-trip` / `catalog:interactive-report` |
 | 生産性 | `message-triage` | 許可されたTeamsチャットとメールを横断し、期限、依頼、影響、未解決の約束を根拠に重要メッセージを整理する。 | Teams / チャット / Outlook / メール / 社内検索 / AskUserQuestion / ファイル作成 / HTML表示 / `catalog:interactive-report` |
-| 調査 | `general-research` | 任意のテーマについて社内情報、文書、会話、公開情報を横断調査し、確認済み事実、相違点、仮説、情報ギャップを出典付きで整理する。 | AskUserQuestion / 社内検索 / Web検索 / ファイル読取 / 作成 / Teams / 会議議事録 / Outlook / メール / SharePoint / OneDrive / HTML表示 / `catalog:interactive-report` |
-| 調査 | `sales-prep` | 商談の目的と対象を確定し、社内の接点・資料と公開情報を調査して、顧客課題、注力領域、競合動向、仮説、質問、次の行動を根拠付きの商談準備レポートにまとめる。 | AskUserQuestion / Outlook予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / 社内検索 / Web検索 / ファイル読取 / 作成 / HTML表示 / `catalog:interactive-report` |
+
+### 文書作成
+
+```mermaid
+flowchart LR
+	REQUEST["登壇依頼・過去の資料・組織の規定"] --> SES["session-prep"]
+	SES --> SCRIPT["シナリオ・台本・返信下書き"]
+	SCRIPT -.->|必要なら利用者が引き継ぐ| PB["powerpoint-builder"]
+	MESSAGE["伝えたい内容・入力資料"] --> PB
+	PB --> PPTX["内容・レイアウトを検証したPowerPoint"]
+```
+
+#### 使い方
+
+**伝えたい内容・登壇依頼 → ストーリーと視覚表現を設計 → 台本・スライドへ**
+
+登壇なら `session-prep` でシナリオ・台本を用意し、必要に応じて `powerpoint-builder` で資料化します。スライド作成だけでも利用できます。
+
+#### Skill一覧
+
+| 領域 | スキル | 処理と成果物 | 主な連携・機能 |
+|---|---|---|---|
+| 文書作成 | `powerpoint-builder` | 入力資料、組織内情報、公開情報を根拠にストーリーと視覚表現を設計し、編集可能なPowerPointを作成して内容・レイアウト・OOXML互換性を検証する。 | ファイル読取 / 作成 / PowerPoint / 画像生成 / 画像検索 / 取得 / Python / Node.js / Web検索 / 社内検索 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive |
+| 文書作成 | `session-prep` | 登壇依頼を読み、組織の規定と成功事例を確認して、シナリオ、タイトル、台本、スライド連携、返信下書きまでを支援する。 | 社内検索 / ファイル読取 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive |
+
+### クリエイティブ
+
+```mermaid
+flowchart LR
+	THEME["ゲームのテーマ・提供情報"] --> GB["game-builder"]
+	GB --> GAME["遊べる単一HTML"]
+	RECORDING["画面録画・見せたい操作"] --> DVE["demo-video-editor"]
+	DVE --> EDITED["ズーム・日本語テロップ付きMP4"]
+	EDITED -.->|必要なら利用者が引き継ぐ| VC["video-compressor"]
+	VIDEO["元動画・目標容量・画質"] --> VC
+	VC --> SMALL["容量を調整したMP4・前後の比較"]
+```
+
+#### 使い方
+
+**テーマや映像素材 → 制作・編集 → 遊べる体験や共有しやすい動画へ**
+
+ゲーム制作は独立した入口です。動画は、利用者が `demo-video-editor` で作ったMP4を必要に応じて `video-compressor` に渡し、共有向けの容量に調整できます。
+
+圧縮だけなら `video-compressor` に直接依頼します。編集・圧縮は匿名化ではないため、公開前に利用権と機密情報の映り込みを確認してください。
+
+#### Skill一覧
+
+| 領域 | スキル | 処理と成果物 | 主な連携・機能 |
+|---|---|---|---|
 | クリエイティブ | `demo-video-editor` | 画面録画から見どころを切り出し、ズーム・強調枠・日本語テロップ付きのMP4を作る。 | ファイル読取 / 作成 / Python / ffmpeg / 画像表示 |
 | クリエイティブ | `game-builder` | 利用者のテーマや提供情報から、既存作品を複製しない汎用レトロゲームを設計し、CSSとJavaScriptを埋め込んだ単一HTMLとして作成する。 | AskUserQuestion / ファイル読取 / 作成 / HTML / CSS / JavaScript / ブラウザテスト |
 | クリエイティブ | `video-compressor` | 目標容量または画質プリセットに合わせ、品質下限を保って動画をMP4へ圧縮する。 | ファイル読取 / 作成 / Python / ffmpeg |
-| 文書作成 | `powerpoint-builder` | 入力資料、組織内情報、公開情報を根拠にストーリーと視覚表現を設計し、編集可能なPowerPointを作成して内容・レイアウト・OOXML互換性を検証する。 | ファイル読取 / 作成 / PowerPoint / 画像生成 / 画像検索 / 取得 / Python / Node.js / Web検索 / 社内検索 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive |
-| 文書作成 | `session-prep` | 登壇依頼を読み、組織の規定と成功事例を確認して、シナリオ、タイトル、台本、スライド連携、返信下書きまでを支援する。 | 社内検索 / ファイル読取 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive |
-<!-- END GENERATED SKILL TABLE -->
+
+### 自動化
+
+```mermaid
+flowchart LR
+	WORK["許可された範囲の予定・メール・会議・文書"] --> SF["skill-finder"]
+	SF --> CANDIDATES["反復性・組織価値からスキル化候補を提案"]
+	CANDIDATES --> APPROVAL{"利用者が候補を承認"}
+	APPROVAL -->|承認した候補だけ| SB["skill-builder"]
+	APPROVAL -->|未承認| HOLD["作成せず候補を見直す"]
+	EXISTING["作成依頼・既存スキルの更新"] --> SB
+	SB --> CHECK["汎用化・秘匿化・参照整合・ZIP検証"]
+	CHECK --> SKILL["再利用・共有できるスキル"]
+```
+
+#### 使い方
+
+**繰り返す業務 → `skill-finder` で候補を提案・承認 → `skill-builder` で作成・検証 → 再利用へ**
+
+何をスキル化するか迷う場合は `skill-finder`、手順が決まっている場合や既存スキルの改善は `skill-builder` から始めます。候補比較の可視化には `interactive-report` を利用し、利用者が承認した候補だけを作成工程へ渡します。作成後も、共有・公開は利用者の明示確認を経て行います。
+
+#### Skill一覧
+
+| 領域 | スキル | 処理と成果物 | 主な連携・機能 |
+|---|---|---|---|
+| 自動化 | `skill-finder` | 許可された最近の予定、メール、チャット、会議、文書を最小範囲で確認し、反復性と組織価値からCoworkスキル化候補を提案する。 | AskUserQuestion / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive / 社内検索 / ファイル読取 / 作成 / HTML表示 / `catalog:interactive-report` / `catalog:skill-builder` |
+| 自動化 | `skill-builder` | パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・業務コンテキスト・SKILL.md 簡潔化・参照整合・階層化) を実施する。 | Cowork スキル基盤 / `catalog:account-plan` / `catalog:business-trip` / `catalog:daily-brief` / `catalog:general-analysis` / `catalog:general-planning` / `catalog:general-research` / `catalog:general-review` / `catalog:interactive-report` / `catalog:session-prep` |
 
 ## インストール
 
