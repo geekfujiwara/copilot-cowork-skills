@@ -47,8 +47,8 @@ Created by **Geek Fujiwara** · Released under the **MIT License**
 | [分析](#分析) | データや企画を比較・評価し、判断につなげたい | 分析・評価結果・インタラクティブHTML |
 | [生産性](#生産性) | 計画・予定・連絡から次の行動を決めたい | 実行計画・顧客別計画・旅程・優先事項 |
 | [文書作成](#文書作成) | 伝えたい内容を台本やスライドにしたい | 登壇シナリオ・台本・PowerPoint |
-| [クリエイティブ](#クリエイティブ) | ゲームや動画を制作・編集したい | 遊べるHTML・編集済みMP4・圧縮MP4 |
 | [自動化](#自動化) | 繰り返す業務を再利用できる手順にしたい | スキル化候補・検証済みスキル |
+| [クリエイティブ](#クリエイティブ) | ゲームや動画を制作・編集したい | 遊べるHTML・編集済みMP4・圧縮MP4 |
 
 ## スキル一覧
 
@@ -165,6 +165,33 @@ flowchart LR
 | 文書作成 | `powerpoint-builder` | 入力資料、組織内情報、公開情報を根拠にストーリーと視覚表現を設計し、編集可能なPowerPointを作成して内容・レイアウト・OOXML互換性を検証する。 | ファイル読取 / 作成 / PowerPoint / 画像生成 / 画像検索 / 取得 / Python / Node.js / Web検索 / 社内検索 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive |
 | 文書作成 | `session-prep` | 登壇依頼を読み、組織の規定と成功事例を確認して、シナリオ、タイトル、台本、スライド連携、返信下書きまでを支援する。 | 社内検索 / ファイル読取 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive |
 
+### 自動化
+
+```mermaid
+flowchart LR
+	WORK["許可された範囲の予定・メール・会議・文書"] --> SF["skill-finder"]
+	SF --> CANDIDATES["反復性・組織価値からスキル化候補を提案"]
+	CANDIDATES --> APPROVAL{"利用者が候補を承認"}
+	APPROVAL -->|承認した候補だけ| SB["skill-builder"]
+	APPROVAL -->|未承認| HOLD["作成せず候補を見直す"]
+	EXISTING["作成依頼・既存スキルの更新"] --> SB
+	SB --> CHECK["汎用化・秘匿化・参照整合・ZIP検証"]
+	CHECK --> SKILL["再利用・共有できるスキル"]
+```
+
+#### 使い方
+
+**繰り返す業務 → `skill-finder` で候補を提案・承認 → `skill-builder` で作成・検証 → 再利用へ**
+
+何をスキル化するか迷う場合は `skill-finder`、手順が決まっている場合や既存スキルの改善は `skill-builder` から始めます。候補比較の可視化には `interactive-report` を利用し、利用者が承認した候補だけを作成工程へ渡します。作成後も、共有・公開は利用者の明示確認を経て行います。
+
+#### Skill一覧
+
+| 領域 | スキル | 処理と成果物 | 主な連携・機能 |
+|---|---|---|---|
+| 自動化 | `skill-finder` | 許可された最近の予定、メール、チャット、会議、文書を最小範囲で確認し、反復性と組織価値からCoworkスキル化候補を提案する。 | AskUserQuestion / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive / 社内検索 / ファイル読取 / 作成 / HTML表示 / `catalog:interactive-report` / `catalog:skill-builder` |
+| 自動化 | `skill-builder` | パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・業務コンテキスト・SKILL.md 簡潔化・参照整合・階層化) を実施する。 | Cowork スキル基盤 / `catalog:account-plan` / `catalog:business-trip` / `catalog:daily-brief` / `catalog:general-analysis` / `catalog:general-planning` / `catalog:general-research` / `catalog:general-review` / `catalog:interactive-report` / `catalog:session-prep` |
+
 ### クリエイティブ
 
 ```mermaid
@@ -193,33 +220,6 @@ flowchart LR
 | クリエイティブ | `demo-video-editor` | 画面録画から見どころを切り出し、ズーム・強調枠・日本語テロップ付きのMP4を作る。 | ファイル読取 / 作成 / Python / ffmpeg / 画像表示 |
 | クリエイティブ | `game-builder` | 利用者のテーマや提供情報から、既存作品を複製しない汎用レトロゲームを設計し、CSSとJavaScriptを埋め込んだ単一HTMLとして作成する。 | AskUserQuestion / ファイル読取 / 作成 / HTML / CSS / JavaScript / ブラウザテスト |
 | クリエイティブ | `video-compressor` | 目標容量または画質プリセットに合わせ、品質下限を保って動画をMP4へ圧縮する。 | ファイル読取 / 作成 / Python / ffmpeg |
-
-### 自動化
-
-```mermaid
-flowchart LR
-	WORK["許可された範囲の予定・メール・会議・文書"] --> SF["skill-finder"]
-	SF --> CANDIDATES["反復性・組織価値からスキル化候補を提案"]
-	CANDIDATES --> APPROVAL{"利用者が候補を承認"}
-	APPROVAL -->|承認した候補だけ| SB["skill-builder"]
-	APPROVAL -->|未承認| HOLD["作成せず候補を見直す"]
-	EXISTING["作成依頼・既存スキルの更新"] --> SB
-	SB --> CHECK["汎用化・秘匿化・参照整合・ZIP検証"]
-	CHECK --> SKILL["再利用・共有できるスキル"]
-```
-
-#### 使い方
-
-**繰り返す業務 → `skill-finder` で候補を提案・承認 → `skill-builder` で作成・検証 → 再利用へ**
-
-何をスキル化するか迷う場合は `skill-finder`、手順が決まっている場合や既存スキルの改善は `skill-builder` から始めます。候補比較の可視化には `interactive-report` を利用し、利用者が承認した候補だけを作成工程へ渡します。作成後も、共有・公開は利用者の明示確認を経て行います。
-
-#### Skill一覧
-
-| 領域 | スキル | 処理と成果物 | 主な連携・機能 |
-|---|---|---|---|
-| 自動化 | `skill-finder` | 許可された最近の予定、メール、チャット、会議、文書を最小範囲で確認し、反復性と組織価値からCoworkスキル化候補を提案する。 | AskUserQuestion / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive / 社内検索 / ファイル読取 / 作成 / HTML表示 / `catalog:interactive-report` / `catalog:skill-builder` |
-| 自動化 | `skill-builder` | パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・業務コンテキスト・SKILL.md 簡潔化・参照整合・階層化) を実施する。 | Cowork スキル基盤 / `catalog:account-plan` / `catalog:business-trip` / `catalog:daily-brief` / `catalog:general-analysis` / `catalog:general-planning` / `catalog:general-research` / `catalog:general-review` / `catalog:interactive-report` / `catalog:session-prep` |
 
 ## インストール
 
