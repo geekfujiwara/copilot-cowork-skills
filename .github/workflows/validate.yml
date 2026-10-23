@@ -18,6 +18,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Test reviewed font allowlist
+        run: python -B -m unittest discover -s skills/skill-builder/scripts -p test_audit_skill.py
       - name: Audit every skill
         shell: bash
         run: |

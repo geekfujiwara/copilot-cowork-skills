@@ -90,6 +90,8 @@ generalシリーズと `account-plan` を含む各業務スキルは、自己完
 | 自動化 | `skill-finder` | 許可された最近の予定、メール、チャット、会議、文書を最小範囲で確認し、反復性と組織価値からCoworkスキル化候補を提案する。 | AskUserQuestion / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive / 社内検索 / ファイル読取 / 作成 / HTML表示 / `catalog:interactive-report` / `catalog:skill-builder` |
 | 生産性 | `account-plan` | 社内規定、過去の成功事例、指定様式、顧客接点、販売対象、予算を組織内情報から確認し、根拠あるゴール、KPI、実行ステップ、予算配分をインタラクティブHTMLにまとめる。 | AskUserQuestion / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive / 社内検索 / Web検索 / ファイル読取 / 作成 / HTML表示 / `catalog:interactive-report` |
 | 生産性 | `business-trip` | 予定表、メール、会議、社内資料、公開情報から出張要件と規定を集め、公共交通の経路・運賃概算、宿泊、申請、関係者、資料を統合したMarkdown旅程を作る。 | Outlook予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / ブラウザ / Web検索 / 社内検索 / ファイル読取 |
+| 生産性 | `demo-video-editor` | 画面録画から見どころを切り出し、ズーム・強調枠・日本語テロップ付きのMP4を作る。 | ファイル読取 / 作成 / Python / ffmpeg / 画像表示 |
+| 生産性 | `video-compressor` | 目標容量または画質プリセットに合わせ、品質下限を保って動画をMP4へ圧縮する。 | ファイル読取 / 作成 / Python / ffmpeg |
 | 生産性 | `daily-brief` | 予定表、メール、Teams、商談、ニュース、顧客動向を統合し、インタラクティブHTMLと重複のない本人向けメールにまとめる。 | 予定表 / メール / Teams / 会議議事録 / SharePoint / OneDrive / Web 検索 / 会話履歴 / ファイル読取 / 作成 / HTML表示 / スケジュール実行 / `catalog:interactive-report` |
 | 生産性 | `general-planning` | 任意の取り組みについて、組織の方針、現状、成功事例、制約からゴール、KPI、ロードマップ、責任、リスクを設計する。 | AskUserQuestion / 社内検索 / Web検索 / ファイル読取 / 作成 / Teams / 会議議事録 / Outlook / メール / SharePoint / OneDrive / HTML表示 / `catalog:account-plan` / `catalog:business-trip` / `catalog:interactive-report` |
 | 生産性 | `message-triage` | 許可されたTeamsチャットとメールを横断し、期限、依頼、影響、未解決の約束を根拠に重要メッセージを整理する。 | Teams / チャット / Outlook / メール / 社内検索 / AskUserQuestion / ファイル作成 / HTML表示 / `catalog:interactive-report` |
@@ -132,6 +134,11 @@ generalシリーズと `account-plan` を含む各業務スキルは、自己完
 | メッセージ整理 | 「今週の重要なメールとTeamsチャットを整理して、対応案を確認して」 |
 | スキル候補発見 | 「最近の業務を確認して、Coworkスキルにできそうな仕事を提案して」 |
 | ブラウザゲーム作成 | 「このテーマで、1つのHTMLだけで動くレトロゲームを作って」 |
+| デモ動画編集 | 「この画面録画をズームと日本語テロップ付きのハイライト動画にして」 |
+| 動画圧縮 | 「この動画を品質下限を保って20MB以下のMP4にして」 |
+
+動画スキルは Python 3 と ffmpeg を使用します。`demo-video-editor` は Pillow / numpy も必要です。
+HyperFrames 出力は明示依頼時のみ生成します。圧縮や編集は匿名化ではなく、公開前に映り込みと利用権の確認が必要です。
 
 Coworkが必要な情報へアクセスできない場合は、対象ファイルを会話へ添付するか、アクセス権のある保存場所を指定します。
 スキルは権限を迂回せず、確認できない情報を推測しません。
@@ -171,6 +178,8 @@ GitHub Releasesへ追加されます。`dist` はコミットしません。
 ## ライセンス
 
 コードと文書は [MIT License](LICENSE) で公開しています。外部サービスや第三者素材には、それぞれの利用条件が適用されます。
+`demo-video-editor` 同梱の Noto Sans JP は SIL Open Font License 1.1 で配布します。
+[著作権表示・ライセンス全文](skills/demo-video-editor/assets/fonts/OFL.txt)を同梱し、MIT の対象から除外します。
 
 ---
 

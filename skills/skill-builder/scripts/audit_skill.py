@@ -25,6 +25,7 @@ skill-builder の「チェック・更新」フェーズで使う。汎用スク
 終了コード: 0 = FAIL 無し / 1 = FAIL あり (WARN のみなら 0)
 """
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -32,6 +33,14 @@ import sys
 
 # 再配布が問題になりやすい拡張子 (フォントは特に注意)
 RISKY_BINARY_EXT = {".ttc", ".ttf", ".otf", ".woff", ".woff2", ".eot"}
+# Reviewed, unmodified Noto Sans JP and its required SIL OFL notice.
+REVIEWED_FONTS = {
+    ("demo-video-editor", "assets/fonts/NotoSansJP-VariableFont_wght.ttf"): (
+        "b81fe0ce33403cab3c68834f2ae081cb9b0ba55de427554e7e0437ac389fa105",
+        "assets/fonts/OFL.txt",
+        "92c343f7e7caebff8bace350bc091b79755f4d0c8b70bb0df21570a1828917b8",
+    ),
+}
 # 除外してよい既知の技術ドメイン (XML 名前空間など)
 ALLOWED_HOST_RE = re.compile(
     r"(schemas\.|w3\.org|openxmlformats|purl\.org|example\.(com|org)|msicons\.com|learn\.microsoft\.com|"
@@ -260,13 +269,28 @@ def check_layout(root):
 # --------------------------------------------------------------------------
 def check_assets(root):
     risky = []
+    approved = []
     for rel, full in iter_files(root):
         if os.path.splitext(rel)[1].lower() in RISKY_BINARY_EXT:
+            reviewed = REVIEWED_FONTS.get((os.path.basename(os.path.abspath(root)), rel))
+            if reviewed:
+                font_hash, notice, notice_hash = reviewed
+                notice_path = os.path.join(root, *notice.split("/"))
+                with open(full, "rb") as font:
+                    matches = hashlib.sha256(font.read()).hexdigest() == font_hash
+                if matches and os.path.isfile(notice_path):
+                    with open(notice_path, "rb") as license_file:
+                        matches = hashlib.sha256(license_file.read()).hexdigest() == notice_hash
+                    if matches:
+                        approved.append(rel)
+                        continue
             risky.append("%s (%.1f MB)" % (rel, os.path.getsize(full) / 1048576.0))
     if risky:
         return [_result("assets/redistribution", "FAIL",
                         "再配布不可の可能性が高い同梱物: %s" % risky)]
-    return [_result("assets/redistribution", "PASS", "ライセンス上問題になりやすい同梱物なし")]
+    return [_result("assets/redistribution", "PASS",
+                    "確認済みOFLフォントとライセンスのハッシュ一致: %s" % approved
+                    if approved else "ライセンス上問題になりやすい同梱物なし")]
 
 
 # --------------------------------------------------------------------------
