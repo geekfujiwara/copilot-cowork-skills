@@ -43,11 +43,11 @@ Created by **Geek Fujiwara** · Released under the **MIT License**
 
 | カテゴリ | こんなときに | 主な成果物 |
 |---|---|---|
+| [スキル発見・作成](#skill-discovery-creation) | 繰り返す業務を再利用できる手順にしたい | スキル化候補・検証済みスキル |
 | [調査](#調査) | テーマや商談の事実・根拠を集めたい | 出典付きの調査結果・商談準備レポート |
 | [分析](#分析) | データや企画を比較・評価し、判断につなげたい | 分析・評価結果・インタラクティブHTML |
 | [生産性](#生産性) | 計画・予定・連絡から次の行動を決めたい | 実行計画・顧客別計画・旅程・優先事項 |
 | [文書作成](#文書作成) | 伝えたい内容を台本やスライドにしたい | 登壇シナリオ・台本・PowerPoint |
-| [自動化](#自動化) | 繰り返す業務を再利用できる手順にしたい | スキル化候補・検証済みスキル |
 | [クリエイティブ](#クリエイティブ) | ゲームや動画を制作・編集したい | 遊べるHTML・編集済みMP4・圧縮MP4 |
 
 ## スキル一覧
@@ -55,6 +55,35 @@ Created by **Geek Fujiwara** · Released under the **MIT License**
 カテゴリごとに **Mermaid → 使い方 → Skill一覧** の順で紹介します。図の矢印は、入力から成果物までの利用イメージです。すべての工程を通る必要はなく、目的に合うスキルから始められます。
 
 点線は、利用者が必要に応じて成果物を別のスキルへ渡す任意の流れであり、自動呼び出しではありません。表の「主な連携・機能」には利用ツールや設計時の参照先も含みます。
+
+<a id="skill-discovery-creation"></a>
+
+### スキル発見・作成
+
+```mermaid
+flowchart LR
+	WORK["許可された範囲の予定・メール・会議・文書"] --> SF["skill-finder"]
+	SF --> CANDIDATES["反復性・組織価値からスキル化候補を提案"]
+	CANDIDATES --> APPROVAL{"利用者が候補を承認"}
+	APPROVAL -->|承認した候補だけ| SB["skill-builder"]
+	APPROVAL -->|未承認| HOLD["作成せず候補を見直す"]
+	EXISTING["作成依頼・既存スキルの更新"] --> SB
+	SB --> CHECK["汎用化・秘匿化・参照整合・ZIP検証"]
+	CHECK --> SKILL["再利用・共有できるスキル"]
+```
+
+#### 使い方
+
+**繰り返す業務 → `skill-finder` で候補を提案・承認 → `skill-builder` で作成・検証 → 再利用へ**
+
+何をスキル化するか迷う場合は `skill-finder`、手順が決まっている場合や既存スキルの改善は `skill-builder` から始めます。候補比較の可視化には `interactive-report` を利用し、利用者が承認した候補だけを作成工程へ渡します。作成後も、共有・公開は利用者の明示確認を経て行います。
+
+#### Skill一覧
+
+| 領域 | スキル | 処理と成果物 | 主な連携・機能 |
+|---|---|---|---|
+| スキル発見・作成 | `skill-finder` | 許可された最近の予定、メール、チャット、会議、文書を最小範囲で確認し、反復性と組織価値からCoworkスキル化候補を提案する。 | AskUserQuestion / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive / 社内検索 / ファイル読取 / 作成 / HTML表示 / `catalog:interactive-report` / `catalog:skill-builder` |
+| スキル発見・作成 | `skill-builder` | パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・業務コンテキスト・SKILL.md 簡潔化・参照整合・階層化) を実施する。 | Cowork スキル基盤 / `catalog:account-plan` / `catalog:business-trip` / `catalog:daily-brief` / `catalog:general-analysis` / `catalog:general-planning` / `catalog:general-research` / `catalog:general-review` / `catalog:interactive-report` / `catalog:session-prep` |
 
 ### 調査
 
@@ -164,33 +193,6 @@ flowchart LR
 |---|---|---|---|
 | 文書作成 | `powerpoint-builder` | 入力資料、組織内情報、公開情報を根拠にストーリーと視覚表現を設計し、編集可能なPowerPointを作成して内容・レイアウト・OOXML互換性を検証する。 | ファイル読取 / 作成 / PowerPoint / 画像生成 / 画像検索 / 取得 / Python / Node.js / Web検索 / 社内検索 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive |
 | 文書作成 | `session-prep` | 登壇依頼を読み、組織の規定と成功事例を確認して、シナリオ、タイトル、台本、スライド連携、返信下書きまでを支援する。 | 社内検索 / ファイル読取 / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive |
-
-### 自動化
-
-```mermaid
-flowchart LR
-	WORK["許可された範囲の予定・メール・会議・文書"] --> SF["skill-finder"]
-	SF --> CANDIDATES["反復性・組織価値からスキル化候補を提案"]
-	CANDIDATES --> APPROVAL{"利用者が候補を承認"}
-	APPROVAL -->|承認した候補だけ| SB["skill-builder"]
-	APPROVAL -->|未承認| HOLD["作成せず候補を見直す"]
-	EXISTING["作成依頼・既存スキルの更新"] --> SB
-	SB --> CHECK["汎用化・秘匿化・参照整合・ZIP検証"]
-	CHECK --> SKILL["再利用・共有できるスキル"]
-```
-
-#### 使い方
-
-**繰り返す業務 → `skill-finder` で候補を提案・承認 → `skill-builder` で作成・検証 → 再利用へ**
-
-何をスキル化するか迷う場合は `skill-finder`、手順が決まっている場合や既存スキルの改善は `skill-builder` から始めます。候補比較の可視化には `interactive-report` を利用し、利用者が承認した候補だけを作成工程へ渡します。作成後も、共有・公開は利用者の明示確認を経て行います。
-
-#### Skill一覧
-
-| 領域 | スキル | 処理と成果物 | 主な連携・機能 |
-|---|---|---|---|
-| 自動化 | `skill-finder` | 許可された最近の予定、メール、チャット、会議、文書を最小範囲で確認し、反復性と組織価値からCoworkスキル化候補を提案する。 | AskUserQuestion / Teams / 会議議事録 / Outlook予定表 / メール / SharePoint / OneDrive / 社内検索 / ファイル読取 / 作成 / HTML表示 / `catalog:interactive-report` / `catalog:skill-builder` |
-| 自動化 | `skill-builder` | パーソナルスキルの新規作成・更新に加え、公開前の品質ゲート (汎用化・秘匿化・ コンプライアンス・業務コンテキスト・SKILL.md 簡潔化・参照整合・階層化) を実施する。 | Cowork スキル基盤 / `catalog:account-plan` / `catalog:business-trip` / `catalog:daily-brief` / `catalog:general-analysis` / `catalog:general-planning` / `catalog:general-research` / `catalog:general-review` / `catalog:interactive-report` / `catalog:session-prep` |
 
 ### クリエイティブ
 
