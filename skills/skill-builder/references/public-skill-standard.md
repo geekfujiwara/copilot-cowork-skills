@@ -23,4 +23,13 @@
 6. FAIL 0の場合だけPRを作成する。PRのCIでも全スキル監査とZIP生成・照合を再実行する。
 7. main反映後にGitHub Actionsが全ZIPをGitHub Releaseへ登録する。
 
+## 同梱フォントの限定許可
+
+フォントは原則として監査で拒否する。例外は `demo-video-editor` の未改変 Noto Sans JP のみで、
+`audit_skill.py` に固定したフォント本体と `assets/fonts/OFL.txt` の SHA-256 が両方一致する場合だけ許可する。
+別のフォント・改変・ライセンスの欠落や変更は拒否し、更新時は再配布条件を再確認する。
+フォントには MIT ではなく SIL OFL 1.1 が適用される。
+回帰テストは `scripts/test_audit_skill.py` を使用する:
+`python -B -m unittest discover -s skills/skill-builder/scripts -p test_audit_skill.py`
+
 既存標準と異なる設計が必要な場合は、理由、安全策、検証方法をPRへ記載する。
