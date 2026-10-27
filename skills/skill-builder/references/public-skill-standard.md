@@ -25,7 +25,7 @@
 
 ## 同梱フォントの限定許可
 
-フォントは原則として監査で拒否する。例外は `demo-video-editor` の未改変 Noto Sans JP のみで、
+フォントは原則として監査で拒否する。例外は `video-editor` の未改変 Noto Sans JP のみで、
 `audit_skill.py` に固定したフォント本体と `assets/fonts/OFL.txt` の SHA-256 が両方一致する場合だけ許可する。
 別のフォント・改変・ライセンスの欠落や変更は拒否し、更新時は再配布条件を再確認する。
 フォントには MIT ではなく SIL OFL 1.1 が適用される。

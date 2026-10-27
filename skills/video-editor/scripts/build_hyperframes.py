@@ -12,9 +12,9 @@ K = min(OW/SW, OH/SH); FW, FH = round(SW*K), round(SH*K); OX, OY = (OW-FW)//2, (
 os.makedirs(os.path.join(A.outdir, "assets", "fonts"), exist_ok=True)
 video_name = "assets/" + P.get("hyperframes_video_name", "source" + os.path.splitext(P["source"])[1])
 if A.copy_video: shutil.copy2(P["source"], os.path.join(A.outdir, video_name))
-font_face = ""
+font_face = ""; FONT = None
 try:
-    f = resolve_font(allow_download=False)
+    f = resolve_font(allow_download=False); FONT = f
     if "noto" in os.path.basename(f).lower():
         shutil.copy2(f, os.path.join(A.outdir, "assets", "fonts", os.path.basename(f)))
         lic = os.path.join(os.path.dirname(f), "OFL.txt")
@@ -26,12 +26,22 @@ def tf(r):
     r = fit_rect(r, SW, SH, ST["zoom_margin"]); s = SW/(r[2]-r[0])
     return dict(scale=round(s, 4), x=round(-r[0]*s*K, 1), y=round(-r[1]*s*K, 1))
 
+def fit_px(text, base, weight="Bold", ratio=0.86):
+    """タイトル・エンドカードの文字を幅 ratio（既定 86%）に収める font-size(px)。フォントが無ければ概算。"""
+    size = base*OH/1080
+    while size > 24:
+        if FONT: w = load_font(FONT, int(size), weight).getlength(text or "")
+        else: w = sum(size if ord(ch) > 0x2e7f else size*0.55 for ch in (text or ""))
+        if w <= OW*ratio: break
+        size -= 2
+    return int(size)
+
 TL, TOTAL = timeline(P); html, js = [], []
 for i, (kind, st, d, p) in enumerate(TL):
     if kind != "seg":
         cid = f"card-{kind}"
         html.append(f'  <section id="{cid}" class="clip card" data-start="{st:.2f}" data-duration="{d:.2f}" data-track-index="2">\n'
-                    f'    <div class="kicker">{esc(p.get("kicker"))}</div><h1>{esc(p.get("title"))}</h1><div class="rule"></div><p>{esc(p.get("sub"))}</p>\n  </section>')
+                    f'    <div class="kicker">{esc(p.get("kicker"))}</div><h1 style="font-size:{fit_px(p.get("title"), 104)}px">{esc(p.get("title"))}</h1><div class="rule"></div><p>{esc(p.get("sub"))}</p>\n  </section>')
         js += [f'tl.from("#{cid} > *", {{opacity:0, y:30, duration:0.7, stagger:0.12, ease:"power3.out"}}, {st:.2f});',
                f'tl.to("#{cid} > *", {{opacity:0, duration:0.4}}, {st+d-0.45:.2f});']
         continue
@@ -57,6 +67,10 @@ for i, (kind, st, d, p) in enumerate(TL):
         sub = f'<div class="sub">{esc(c["sub"])}</div>' if c.get("sub") else ""
         html.append(f'  <div id="{cid}" class="clip callout {pos}" data-start="{st+a:.2f}" data-duration="{b-a:.2f}" data-track-index="3">{step}<div class="ttl">{esc(c["title"])}</div>{sub}</div>')
         js.append(f'tl.from("#{cid}", {{opacity:0, y:40, duration:0.5, ease:"power3.out"}}, {st+a:.2f}).to("#{cid}", {{opacity:0, duration:0.4}}, {st+b-0.4:.2f});')
+    for j, c in enumerate(p.get("subtitles", [])):   # 字幕（中央・半透明の箱・最大幅 78%・0.25 秒フェード）
+        cid = f"{sid}-sb{j}"; a, b = c["t"]; pos = "top" if c.get("position") == "top" else "bottom"
+        html.append(f'  <div id="{cid}" class="clip subtitle {pos}" data-start="{st+a:.2f}" data-duration="{b-a:.2f}" data-track-index="4"><span>{esc(c["text"])}</span></div>')
+        js.append(f'tl.fromTo("#{cid}", {{opacity:0}}, {{opacity:1, duration:0.25}}, {st+a:.2f}).to("#{cid}", {{opacity:0, duration:0.25}}, {st+b-0.25:.2f});')
 
 u = OH/1080
 doc = f'''<!doctype html>
@@ -92,6 +106,11 @@ doc = f'''<!doctype html>
   .callout.top-left {{ left:{60*u:.0f}px; top:{60*u:.0f}px; }} .callout.top-right {{ right:{60*u:.0f}px; top:{60*u:.0f}px; }}
   .callout .step {{ display:inline-block; background:var(--accent); color:var(--bg); font-weight:700; font-size:{22*u:.0f}px; padding:4px 14px; border-radius:999px; }}
   .callout .ttl {{ font-size:{46*u:.0f}px; font-weight:700; margin-top:10px; }}
+  .subtitle {{ inset:auto; left:0; right:0; display:flex; justify-content:center; pointer-events:none; }}
+  .subtitle.bottom {{ bottom:{36*u:.0f}px; }} .subtitle.top {{ top:{36*u:.0f}px; }}
+  .subtitle span {{ max-width:78%; text-align:center; background:rgba(10,18,34,.75); color:#fff; font-size:{38*u:.0f}px; font-weight:500;
+                   line-height:1.42; padding:{12*u:.0f}px {30*u:.0f}px; border-radius:{14*u:.0f}px; line-break:strict; overflow-wrap:anywhere; }}
+  .card h1 {{ white-space:nowrap; }}
   .callout .sub {{ font-size:{28*u:.0f}px; color:#bed0e6; margin-top:6px; font-weight:400; }}
 </style>
 </head>
@@ -110,7 +129,7 @@ doc = f'''<!doctype html>
 '''
 open(os.path.join(A.outdir, "index.html"), "w", encoding="utf-8").write(doc)
 clean = {k: v for k, v in P.items() if not k.startswith("_")}
-clean["source"] = video_name
+clean["source"] = video_name; clean.pop("images_meta", None)   # 画像座標は変換済み（segments は source 座標）
 json.dump(clean, open(os.path.join(A.outdir, "edit-plan.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 open(os.path.join(A.outdir, "README.md"), "w", encoding="utf-8").write(f"""# {P.get("name", "demo-video")} — HyperFrames プロジェクト
 

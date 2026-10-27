@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""動画圧縮ヘルパー（ffmpeg / ffprobe）。
+"""動画圧縮ヘルパー（ffmpeg。ffprobe があれば使い、無ければ ffmpeg -i の出力を解析する）。
 
 使い方の例:
+  python compress_video.py input.mp4 --info                # 情報だけ表示（圧縮しない。ffprobe 不要）
   python compress_video.py input.mov                       # 標準プリセット（CRF 28）
   python compress_video.py input.mp4 --target-mb 20        # 20MB 以下を狙う 2-pass
   python compress_video.py input.mp4 --preset 高画質
@@ -26,6 +27,18 @@ import subprocess
 import sys
 import tempfile
 
+def _ffmpeg():
+    p = shutil.which("ffmpeg")
+    if p:
+        return p
+    try:
+        import imageio_ffmpeg
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:
+        sys.exit("ffmpeg が見つかりません。ffmpeg をインストールしてください。")
+
+
+FFMPEG = _ffmpeg()
 PRESETS = {"高画質": 23, "high": 23, "標準": 28, "standard": 28, "最小": 32, "small": 32}
 SAFETY = 0.95          # 目標サイズに対する安全マージン
 MIN_VIDEO_KBPS = 100   # 2-pass で使う映像ビットレートの絶対下限
@@ -67,7 +80,7 @@ def probe(path):
                     info["acodec"] = s.get("codec_name", "")
                     info["has_audio"] = True
             return _display_dims(info)
-    r = run(["ffmpeg", "-hide_banner", "-i", path])
+    r = run([FFMPEG, "-hide_banner", "-i", path])
     t = r.stderr
     m = re.search(r"Duration: (\d+):(\d+):(\d+\.\d+)", t)
     if m:
@@ -130,7 +143,7 @@ def encode(src, dst, info, args, video_kbps=None):
         crf = PRESETS[args.preset]
         if codec == "libx265":
             crf = min(crf + 4, 51)  # x265 は同等画質で CRF が高め
-        cmd = ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", src] + common + \
+        cmd = [FFMPEG, "-y", "-hide_banner", "-loglevel", "error", "-i", src] + common + \
               ["-crf", str(crf)] + audio + tail + [dst]
         r = run(cmd)
         if r.returncode:
@@ -147,11 +160,11 @@ def encode(src, dst, info, args, video_kbps=None):
         else:
             p1 = ["-pass", "1", "-passlogfile", log]
             p2 = ["-pass", "2", "-passlogfile", log]
-        r = run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", src] + common +
+        r = run([FFMPEG, "-y", "-hide_banner", "-loglevel", "error", "-i", src] + common +
                 rate + p1 + ["-an", "-f", "mp4", os.devnull])
         if r.returncode:
             sys.exit(f"ffmpeg pass1 エラー: {r.stderr.strip()[-800:]}")
-        r = run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", src] + common +
+        r = run([FFMPEG, "-y", "-hide_banner", "-loglevel", "error", "-i", src] + common +
                 rate + p2 + audio + tail + [dst])
         if r.returncode:
             sys.exit(f"ffmpeg pass2 エラー: {r.stderr.strip()[-800:]}")
@@ -178,7 +191,13 @@ def main():
     ap.add_argument("--static", action="store_true", help="--screen と併用: 静止画中心のスライド録画")
     ap.add_argument("--speed", default="medium", help="x264/x265 preset (slow/medium/fast)")
     ap.add_argument("--max-retries", type=int, default=2)
+    ap.add_argument("--info", action="store_true", help="圧縮せず、サイズ・解像度・fps・長さを JSON で表示するだけ（ffprobe 不要）")
     args = ap.parse_args()
+    if args.info:
+        if not os.path.isfile(args.input):
+            sys.exit(f"入力ファイルが見つかりません: {args.input}")
+        print(json.dumps(probe(args.input), ensure_ascii=False, indent=2))
+        return
 
     below = []
     if args.max_short_side is not None and args.max_short_side < FLOOR_SHORT_SIDE:
@@ -239,7 +258,7 @@ def main():
     dst = probe(out)
     target_ok = (dst["size_bytes"] / 1e6 <= args.target_mb) if args.target_mb else None
     dur_ok = abs(dst["duration"] - src["duration"]) <= max(1.0, src["duration"] * 0.01)
-    playable = run(["ffmpeg", "-v", "error", "-i", out, "-t", "5", "-f", "null", "-"]).returncode == 0
+    playable = run([FFMPEG, "-v", "error", "-i", out, "-t", "5", "-f", "null", "-"]).returncode == 0
     if dst["size_bytes"] >= src["size_bytes"]:
         notes.append("出力が元より大きくなりました。元動画は既に十分圧縮されています（--preset 最小、--no-audio を検討。1080p / 30fps 未満への縮小はユーザーの指示がある場合のみ）。")
 

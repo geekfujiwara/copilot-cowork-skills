@@ -35,7 +35,7 @@ import sys
 RISKY_BINARY_EXT = {".ttc", ".ttf", ".otf", ".woff", ".woff2", ".eot"}
 # Reviewed, unmodified Noto Sans JP and its required SIL OFL notice.
 REVIEWED_FONTS = {
-    ("demo-video-editor", "assets/fonts/NotoSansJP-VariableFont_wght.ttf"): (
+    ("video-editor", "assets/fonts/NotoSansJP-VariableFont_wght.ttf"): (
         "b81fe0ce33403cab3c68834f2ae081cb9b0ba55de427554e7e0437ac389fa105",
         "assets/fonts/OFL.txt",
         "2053744949540e32c4bc1e2cea901edf80102d694fe52b424f2769aa8fe8bec2",
