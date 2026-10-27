@@ -200,28 +200,26 @@ flowchart LR
 flowchart LR
 	THEME["ゲームのテーマ・提供情報"] --> GB["game-builder"]
 	GB --> GAME["遊べる単一HTML"]
-	RECORDING["画面録画・見せたい操作"] --> DVE["demo-video-editor"]
-	DVE --> EDITED["ズーム・日本語テロップ付きMP4"]
-	EDITED -.->|必要なら利用者が引き継ぐ| VC["video-compressor"]
-	VIDEO["元動画・目標容量・画質"] --> VC
-	VC --> SMALL["容量を調整したMP4・前後の比較"]
+	RECORDING["画面録画・静止画・見せたい操作"] --> VE["video-editor"]
+	VIDEO["元動画・目標容量・画質"] --> VE
+	VE --> EDITED["ズーム・テロップ・字幕付きMP4"]
+	VE --> SMALL["圧縮MP4・前後の比較"]
 ```
 
 #### 使い方
 
 **テーマや映像素材 → 制作・編集 → 遊べる体験や共有しやすい動画へ**
 
-ゲーム制作は独立した入口です。動画は、利用者が `demo-video-editor` で作ったMP4を必要に応じて `video-compressor` に渡し、共有向けの容量に調整できます。
+ゲーム制作は独立した入口です。動画は `video-editor` で画面録画の編集や静止画からの紙芝居動画の作成を行い、必要に応じて同じスキルで圧縮できます。字幕、静止画グリッド確認、分割書き出し・再開にも対応します。
 
-圧縮だけなら `video-compressor` に直接依頼します。編集・圧縮は匿名化ではないため、公開前に利用権と機密情報の映り込みを確認してください。
+圧縮だけの依頼も `video-editor` が扱います。編集後の圧縮は利用者が選択した場合のみ行います。編集・圧縮は匿名化ではないため、公開前に利用権と機密情報の映り込みを確認してください。
 
 #### Skill一覧
 
 | 領域 | スキル | 処理と成果物 | 主な連携・機能 |
 |---|---|---|---|
-| クリエイティブ | `demo-video-editor` | 画面録画から見どころを切り出し、ズーム・強調枠・日本語テロップ付きのMP4を作る。 | ファイル読取 / 作成 / Python / ffmpeg / 画像表示 |
 | クリエイティブ | `game-builder` | 利用者のテーマや提供情報から、既存作品を複製しない汎用レトロゲームを設計し、CSSとJavaScriptを埋め込んだ単一HTMLとして作成する。 | AskUserQuestion / ファイル読取 / 作成 / HTML / CSS / JavaScript / ブラウザテスト |
-| クリエイティブ | `video-compressor` | 目標容量または画質プリセットに合わせ、品質下限を保って動画をMP4へ圧縮する。 | ファイル読取 / 作成 / Python / ffmpeg |
+| クリエイティブ | `video-editor` | 画面録画や静止画からズーム・強調枠・テロップ・字幕付きMP4を作り、必要に応じて圧縮する。圧縮だけの依頼にも対応。 | ファイル読取 / 作成 / Python / ffmpeg / 画像表示 |
 
 ## インストール
 
@@ -256,9 +254,10 @@ flowchart LR
 | スキル候補発見 | 「最近の業務を確認して、Coworkスキルにできそうな仕事を提案して」 |
 | ブラウザゲーム作成 | 「このテーマで、1つのHTMLだけで動くレトロゲームを作って」 |
 | デモ動画編集 | 「この画面録画をズームと日本語テロップ付きのハイライト動画にして」 |
+| 静止画から動画作成 | 「この画像を順番に並べ、英語字幕付きの紙芝居動画にして」 |
 | 動画圧縮 | 「この動画を品質下限を保って20MB以下のMP4にして」 |
 
-動画スキルは Python 3 と ffmpeg を使用します。`demo-video-editor` は Pillow / numpy も必要です。
+`video-editor` は Python 3 と ffmpeg を使用します。編集・静止画処理には Pillow / numpy も必要です。ffprobe は任意で、なくても処理できます。
 HyperFrames 出力は明示依頼時のみ生成します。圧縮や編集は匿名化ではなく、公開前に映り込みと利用権の確認が必要です。
 
 Coworkが必要な情報へアクセスできない場合は、対象ファイルを会話へ添付するか、アクセス権のある保存場所を指定します。
@@ -299,8 +298,8 @@ GitHub Releasesへ追加されます。`dist` はコミットしません。
 ## ライセンス
 
 コードと文書は [MIT License](LICENSE) で公開しています。外部サービスや第三者素材には、それぞれの利用条件が適用されます。
-`demo-video-editor` 同梱の Noto Sans JP は SIL Open Font License 1.1 で配布します。
-[著作権表示・ライセンス全文](skills/demo-video-editor/assets/fonts/OFL.txt)を同梱し、MIT の対象から除外します。
+`video-editor` 同梱の Noto Sans JP は SIL Open Font License 1.1 で配布します。
+[著作権表示・ライセンス全文](skills/video-editor/assets/fonts/OFL.txt)を同梱し、MIT の対象から除外します。
 
 ---
 

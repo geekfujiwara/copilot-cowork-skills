@@ -10,9 +10,9 @@ class ReviewedFontTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name) / "demo-video-editor"
+        self.root = Path(self.temp.name) / "video-editor"
         self.fonts = self.root / "assets" / "fonts"
-        source = Path(__file__).resolve().parents[2] / "demo-video-editor" / "assets" / "fonts"
+        source = Path(__file__).resolve().parents[2] / "video-editor" / "assets" / "fonts"
         shutil.copytree(source, self.fonts)
 
     def status(self):
