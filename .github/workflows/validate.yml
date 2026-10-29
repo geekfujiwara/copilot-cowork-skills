@@ -23,7 +23,7 @@ jobs:
       - name: Install video test dependencies
         run: python -m pip install Pillow numpy imageio-ffmpeg
       - name: Test video editing and compression
-        run: python -B -m unittest discover -s skills/video-editor/scripts -p test_video_editor.py
+        run: python -B -m unittest discover -s skills/video-editor/scripts -p "test_*.py"
       - name: Audit every skill
         shell: bash
         run: |
