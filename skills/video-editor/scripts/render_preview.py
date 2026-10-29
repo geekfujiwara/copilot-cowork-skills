@@ -9,6 +9,7 @@ import argparse, hashlib, json, math, os, shutil, subprocess, sys
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 from common import *
+from subtitle_style import subtitle_image
 
 ap = argparse.ArgumentParser(); ap.add_argument("plan"); ap.add_argument("out")
 ap.add_argument("--stills", default=""); ap.add_argument("--grid", action="store_true")
@@ -117,12 +118,7 @@ _sc = {}
 def sub_img(text):
     """字幕: 中央・半透明の箱、最大幅 78%、英語は単語・日本語は文字で自動折り返し。"""
     if text in _sc: return _sc[text]
-    f = F(38, "Medium"); lines = wrap_text(text, f, OW*0.78-60*U) or [""]; lh = int(54*U)
-    if len(lines) > 2: print(f"警告: 字幕が {len(lines)} 行です（2 行以内推奨）: {text[:40]}…", file=sys.stderr)
-    w = int(max(f.getlength(l) for l in lines)+60*U); h = int(len(lines)*lh+30*U)
-    im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
-    d.rounded_rectangle((0, 0, w, h), int(14*U), fill=(10, 18, 34, 190))
-    for i, l in enumerate(lines): d.text((w/2-f.getlength(l)/2, int(12*U)+i*lh), l, font=f, fill=(255, 255, 255))
+    im = subtitle_image(text, F(38, "Medium"), OW, OH)
     _sc[text] = im; return im
 
 def read_seg(s0, d):
