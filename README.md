@@ -230,10 +230,15 @@ Published skill ZIPs are available from GitHub Releases.
 - Releases: https://github.com/geekfujiwara/copilot-cowork-skills/releases
 - Each skill is distributed separately, for example `account-plan.zip`, `daily-brief.zip`, or `general-analysis.zip`.
 
+**Recommended: Extract the ZIP and add the skill from OneDrive.** Some skills include large supporting files and may exceed Cowork's direct-upload size limit, so using OneDrive is the recommended starting point.
+
 1. Download the ZIP for the skill you want from the Releases page.
-2. Import it through Cowork's skill management or custom-skill addition screen.
-3. Confirm that the skill appears in the list, and review organizational policies and access scope as needed.
-4. To use multiple skills, install each required ZIP separately.
+2. Extract the ZIP and place the extracted skill folder in OneDrive. Keep `SKILL.md` and all accompanying files and subfolders, such as `references/` and `scripts/`, together without changing their relative paths.
+3. Wait for OneDrive to finish syncing, then use Cowork's skill management or custom-skill addition screen to add the skill from OneDrive. Select the extracted skill folder containing `SKILL.md`, not the ZIP or its parent folder.
+4. Confirm that the skill appears in the list and is available in your Cowork conversation.
+5. To use multiple skills, repeat these steps for each required skill.
+
+If the ZIP is within the upload limit, importing it directly through the custom-skill addition screen is also an option. If the upload fails because the file is too large, use the OneDrive method above rather than removing supporting files to reduce its size.
 
 Skill ZIPs contain the same content as the source, including `LICENSE`. Check your organization's guidelines and your access to the relevant data before use.
 
@@ -535,10 +540,15 @@ flowchart LR
 - Releases: https://github.com/geekfujiwara/copilot-cowork-skills/releases
 - 各スキルは `account-plan.zip` / `daily-brief.zip` / `general-analysis.zip` のように個別のZIPとして配布されます。
 
+**推奨：ZIPを展開し、OneDriveからスキルを追加する方法。** 一部のスキルには大きな補助ファイルが含まれ、Coworkへ直接アップロードできるサイズを超える場合があるため、基本的にはOneDriveを使う方法がおすすめです。
+
 1. 上記の Releases ページで、利用したいスキルの ZIP をダウンロードします。
-2. Cowork のスキル管理またはカスタムスキルの追加画面で、ダウンロードした ZIP をインポートします。
-3. インポート後に対象スキルが一覧へ表示されることを確認し、必要に応じて組織ポリシーやアクセス範囲を確認してください。
-4. 複数のスキルを利用する場合は、必要な ZIP を個別にインストールしてください。
+2. ZIPを展開し、展開したスキルのフォルダーをOneDriveに配置します。`SKILL.md` と、`references/`・`scripts/` などの付属ファイルやサブフォルダーは、相対的な配置を変えずにまとめて保存してください。
+3. OneDriveの同期完了を待ち、Coworkのスキル管理またはカスタムスキルの追加画面で、OneDriveからスキルを追加します。ZIPやその親フォルダーではなく、`SKILL.md` が入っている展開済みのスキルフォルダーを選択してください。
+4. 対象スキルが一覧に表示され、Coworkの会話で利用できることを確認します。
+5. 複数のスキルを利用する場合は、必要なスキルごとに同じ手順を繰り返してください。
+
+アップロード上限内のZIPは、カスタムスキルの追加画面で直接インポートすることもできます。サイズが大きくてアップロードできない場合は、補助ファイルを削って小さくするのではなく、上記のOneDrive経由で追加してください。
 
 スキル ZIP はソースコードと同一の内容を含み、`LICENSE` も同梱されます。利用前に、組織のガイドラインと対象データへのアクセス権を確認してください。
 
