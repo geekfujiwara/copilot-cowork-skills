@@ -95,6 +95,7 @@ description 超過は短縮、構造 FAIL は修正してから採点する。
 | [scaffold_skill.py](scripts/scaffold_skill.py) | 雛形生成 (`--name/--type/--category/--icon/--summary`)、description 長チェック (`--check-desc`) |
 | [audit_skill.py](scripts/audit_skill.py) | 公開前品質ゲート。秘匿性・参照整合・簡潔性・階層・ライセンス・外部データ安全性を一括判定 (FAIL で終了コード 1) |
 | [package_skills.py](scripts/package_skills.py) | 全スキルを `dist/<name>.zip` へ再生成し、ZIP内容がソースと一致することを検証 |
+| [scaffold_from_template.py](scripts/scaffold_from_template.py) | 共通の `templates/*/scaffold.json` から別の作業フォルダーへ生成。`--dry-run`、変数置換、継承、未解決変数の拒否に対応 |
 
 作成・更新・統合後は `package_skills.py` で全ZIPを検証する。`dist` はコミットせず、main反映後にReleaseへ提供する。
 

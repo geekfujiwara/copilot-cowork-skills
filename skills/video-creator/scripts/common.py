@@ -23,14 +23,8 @@ def ffmpeg():
     except Exception: sys.exit("ffmpeg が見つかりません。ffmpeg をインストールしてください。")
 
 def probe(path):
-    out = subprocess.run([ffmpeg(), "-hide_banner", "-i", path], capture_output=True, text=True).stderr
-    import re
-    dur = re.search(r"Duration: (\d+):(\d+):([\d.]+)", out)
-    vs = re.search(r"Video: .*?, (\d{2,5})x(\d{2,5})", out)
-    fps = re.search(r"([\d.]+) fps", out)
-    return dict(duration=int(dur[1])*3600+int(dur[2])*60+float(dur[3]) if dur else None,
-                width=int(vs[1]) if vs else None, height=int(vs[2]) if vs else None,
-                fps=float(fps[1]) if fps else None, has_audio="Audio:" in out)
+    from video_media import probe as probe_media
+    return probe_media(path)
 
 def _has_japanese(path):
     try:
@@ -41,7 +35,7 @@ def _has_japanese(path):
 
 def resolve_font(explicit=None, allow_download=False):
     """Noto Sans JP を最優先。順序: 明示指定/環境変数 → 同梱 assets/fonts → システム → ダウンロード。"""
-    cands = [explicit, os.environ.get("VIDEO_EDITOR_FONT"), os.environ.get("DEMO_VIDEO_FONT")]
+    cands = [explicit, os.environ.get("VIDEO_CREATOR_FONT"), os.environ.get("VIDEO_EDITOR_FONT"), os.environ.get("DEMO_VIDEO_FONT")]
     if os.path.isdir(FONT_DIR):
         cands += sorted(os.path.join(FONT_DIR, f) for f in os.listdir(FONT_DIR)
                         if f.lower().endswith((".ttf", ".otf", ".ttc")) and "noto" in f.lower())

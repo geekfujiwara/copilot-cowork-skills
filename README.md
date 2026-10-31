@@ -202,9 +202,9 @@ For a speaking engagement, prepare a scenario and script with `session-prep`, th
 flowchart LR
 	THEME["Game theme and supplied information"] --> GB["game-builder"]
 	GB --> GAME["A playable, single-file HTML game"]
-	RECORDING["Screen recordings, stills, and operations to demonstrate"] --> VE["video-editor"]
+	RECORDING["Screen recordings, stills, and operations to demonstrate"] --> VE["video-creator"]
 	VIDEO["Source video, target size, and quality"] --> VE
-	VE --> EDITED["MP4 with zooms, callouts, captions, and optional AI narration"]
+	VE --> EDITED["Screen-first MP4: actual footage, process diagrams, padded zooms, verified results"]
 	VE --> SMALL["Compressed MP4 and before/after comparison"]
 ```
 
@@ -212,16 +212,18 @@ flowchart LR
 
 **Theme or visual materials → Create and edit → Playable experiences or shareable videos**
 
-Game creation is an independent starting point. Use `video-editor` to edit screen recordings or create slideshow videos from stills, then optionally compress the result with the same skill. It supports subtitles, still-image grid previews, and resumable rendering in parts. Its [business demo workflow](skills/video-editor/references/business-demo-workflow.md) also supports one end-to-end business process with an opening process/benefits overview, an active-step ribbon, AI narration with exactly matching subtitles, preserved caption styling, and audio verification.
+Game creation is an independent starting point. Use `video-creator` to edit screen recordings or create slideshow videos from stills, then optionally compress the result with the same skill. It supports subtitles, still-image grid previews, and resumable rendering in parts. Its [business demo workflow](skills/video-creator/references/business-demo-workflow.md) also supports one end-to-end business process with an opening process/benefits overview, an active-step ribbon, AI narration with exactly matching subtitles, preserved caption styling, and audio verification.
 
-`video-editor` also handles compression-only requests. Post-edit compression is performed only when the user chooses it. Editing and compression are not anonymization: check redistribution rights and any sensitive information visible in the video before publication.
+`video-creator` also handles compression-only requests. Post-edit compression is performed only when the user chooses it. Editing and compression are not anonymization: check redistribution rights and any sensitive information visible in the video before publication.
+
+`video-editor` is now **`video-creator`**. Its standalone ZIP includes the existing shared scaffolder, three diagram-only starter templates and original reusable artwork. The screen-first default is silent and subtitle-free; use a separate writable private job and add genuine captures before production verification. See the [screen-first workflow](skills/video-creator/references/screen-first-workflow.md).
 
 #### Skill catalog
 
 | Area | Skill | Processing and deliverables | Main integrations and capabilities |
 |---|---|---|---|
 | Creative | `game-builder` | Design a generic retro game from the user's theme or supplied information without copying existing works. Deliver a single HTML file with embedded CSS and JavaScript. | AskUserQuestion / file reading and creation / HTML / CSS / JavaScript / browser testing |
-| Creative | `video-editor` | Edit and compress screen recordings and stills. Also supports business-process overviews, active-step indicators, synchronized AI narration and captions, stable caption styling, and quality verification. | File reading and creation / Python / ffmpeg / image display |
+| Creative | `video-creator` | Create screen-first demos from actual recordings: title, process diagrams, two-persona stories, 32px inset zooms and source/result verification. Silent and subtitle-free by default; editing, compression and explicitly requested narration remain available. | File reading and creation / Python / ffmpeg / image display |
 
 ## Installation
 
@@ -264,7 +266,7 @@ Describe your goal in natural language in a Cowork conversation where the skill 
 | Video from stills | "Arrange these images in order and create a slideshow video with English subtitles." |
 | Video compression | "Make this video an MP4 under 20 MB while preserving the quality floor." |
 
-`video-editor` uses Python 3 and ffmpeg. Editing and still-image processing also require Pillow and numpy. ffprobe is optional. Only the optional AI narration mode needs [additional dependencies such as edge-tts](skills/video-editor/scripts/requirements-narration.txt). Transmit script text only after user permission; ordinary editing and compression do not require external TTS.
+`video-creator` uses Python 3 and ffmpeg. Editing and still-image processing also require Pillow and numpy. ffprobe is optional. Only the optional AI narration mode needs [additional dependencies such as edge-tts](skills/video-creator/scripts/requirements-narration.txt). Transmit script text only after user permission; ordinary editing and compression do not require external TTS.
 Generate HyperFrames output only when explicitly requested. Editing and compression do not anonymize content; review visible information and redistribution rights before publication.
 
 If Cowork cannot access the information it needs, attach the files to the conversation or provide a location you are authorized to access. Skills do not bypass permissions or invent information they cannot verify.
@@ -299,8 +301,8 @@ Please communicate constructively and respectfully. Harassment, discrimination, 
 ## License
 
 Code and documentation are released under the [MIT License](LICENSE). External services and third-party materials remain subject to their own terms.
-The Noto Sans JP font bundled with `video-editor` is distributed under the SIL Open Font License 1.1.
-Its [copyright notice and full license](skills/video-editor/assets/fonts/OFL.txt) are included, and the font is excluded from MIT coverage.
+The Noto Sans JP font bundled with `video-creator` is distributed under the SIL Open Font License 1.1.
+Its [copyright notice and full license](skills/video-creator/assets/fonts/OFL.txt) are included, and the font is excluded from MIT coverage.
 
 ---
 
@@ -512,9 +514,9 @@ flowchart LR
 flowchart LR
 	THEME["ゲームのテーマ・提供情報"] --> GB["game-builder"]
 	GB --> GAME["遊べる単一HTML"]
-	RECORDING["画面録画・静止画・見せたい操作"] --> VE["video-editor"]
+	RECORDING["画面録画・静止画・見せたい操作"] --> VE["video-creator"]
 	VIDEO["元動画・目標容量・画質"] --> VE
-	VE --> EDITED["ズーム・テロップ・字幕・任意のAI音声付きMP4"]
+	VE --> EDITED["実録画・工程図・余白付きズーム・結果確認のMP4"]
 	VE --> SMALL["圧縮MP4・前後の比較"]
 ```
 
@@ -522,16 +524,16 @@ flowchart LR
 
 **テーマや映像素材 → 制作・編集 → 遊べる体験や共有しやすい動画へ**
 
-ゲーム制作は独立した入口です。動画は `video-editor` で画面録画の編集や静止画からの紙芝居動画の作成を行い、必要に応じて同じスキルで圧縮できます。字幕、静止画グリッド確認、分割書き出し・再開にも対応します。一つの業務フローを題材に、冒頭の全体プロセスとメリット、現在地リボン、AI音声と完全一致の字幕同期、字幕スタイル維持と音声検証を行う[業務デモ制作手順](skills/video-editor/references/business-demo-workflow.md)も利用できます。
+ゲーム制作は独立した入口です。動画の `video-editor` は **`video-creator` に名称変更**しました。[画面中心制作](skills/video-creator/references/screen-first-workflow.md)は、添付実録画、5秒タイトル、工程図、2役割の紹介、全方向32pxの余白付きズーム、原本・時刻・完成結果の検証に対応します。既定は無音・字幕なし。単独ZIPに共通Scaffolder・3雛形・元の作図素材を同梱し、Skillとは別の私用作業フォルダーで動きます。従来の編集・圧縮・紙芝居と、明示希望時の[音声字幕同期](skills/video-creator/references/business-demo-workflow.md)も維持しています。
 
-圧縮だけの依頼も `video-editor` が扱います。編集後の圧縮は利用者が選択した場合のみ行います。編集・圧縮は匿名化ではないため、公開前に利用権と機密情報の映り込みを確認してください。
+圧縮だけの依頼も `video-creator` が扱います。編集後の圧縮は利用者が選択した場合のみ行います。編集・圧縮は匿名化ではないため、公開前に利用権と機密情報の映り込みを確認してください。
 
 #### Skill一覧
 
 | 領域 | スキル | 処理と成果物 | 主な連携・機能 |
 |---|---|---|---|
 | クリエイティブ | `game-builder` | 利用者のテーマや提供情報から、既存作品を複製しない汎用レトロゲームを設計し、CSSとJavaScriptを埋め込んだ単一HTMLとして作成する。 | AskUserQuestion / ファイル読取 / 作成 / HTML / CSS / JavaScript / ブラウザテスト |
-| クリエイティブ | `video-editor` | 画面録画・静止画の編集と圧縮。業務デモの全体図・現在地表示、AI音声と字幕の同期、字幕スタイル維持・品質検証にも対応。 | ファイル読取 / 作成 / Python / ffmpeg / 画像表示 |
+| クリエイティブ | `video-creator` | 実録画からの画面中心制作・2役割・32px余白付きズーム・原本と完成結果の検証。既定は無音・字幕なし。従来の編集・圧縮と、明示希望時の音声字幕同期も維持。 | ファイル読取 / 作成 / Python / ffmpeg / 画像表示 |
 
 ## インストール
 
@@ -576,7 +578,7 @@ flowchart LR
 | 静止画から動画作成 | 「この画像を順番に並べ、英語字幕付きの紙芝居動画にして」 |
 | 動画圧縮 | 「この動画を品質下限を保って20MB以下のMP4にして」 |
 
-`video-editor` は Python 3 と ffmpeg を使用します。編集・静止画処理には Pillow / numpy も必要です。ffprobe は任意で、なくても処理できます。任意のAI音声モードのみ [edge-ttsなどの追加依存](skills/video-editor/scripts/requirements-narration.txt)が必要です。台本の外部送信は利用者の許可後だけ行い、既存の編集・圧縮に外部TTSは不要です。
+`video-creator` は Python 3 と ffmpeg を使用します。編集・静止画処理には Pillow / numpy も必要です。ffprobe は任意で、なくても処理できます。任意のAI音声モードのみ [edge-ttsなどの追加依存](skills/video-creator/scripts/requirements-narration.txt)が必要です。台本の外部送信は利用者の許可後だけ行い、既存の編集・圧縮に外部TTSは不要です。
 HyperFrames 出力は明示依頼時のみ生成します。圧縮や編集は匿名化ではなく、公開前に映り込みと利用権の確認が必要です。
 
 Coworkが必要な情報へアクセスできない場合は、対象ファイルを会話へ添付するか、アクセス権のある保存場所を指定します。
@@ -617,8 +619,8 @@ GitHub Releasesへ追加されます。`dist` はコミットしません。
 ## ライセンス
 
 コードと文書は [MIT License](LICENSE) で公開しています。外部サービスや第三者素材には、それぞれの利用条件が適用されます。
-`video-editor` 同梱の Noto Sans JP は SIL Open Font License 1.1 で配布します。
-[著作権表示・ライセンス全文](skills/video-editor/assets/fonts/OFL.txt)を同梱し、MIT の対象から除外します。
+`video-creator` 同梱の Noto Sans JP は SIL Open Font License 1.1 で配布します。
+[著作権表示・ライセンス全文](skills/video-creator/assets/fonts/OFL.txt)を同梱し、MIT の対象から除外します。
 
 ---
 
