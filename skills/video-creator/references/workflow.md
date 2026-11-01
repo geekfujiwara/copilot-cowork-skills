@@ -1,4 +1,4 @@
-# video-editor 詳細手順
+# video-creator 詳細手順
 
 パスは特記がなければスキルフォルダー基準。安全策は `SKILL.md` を優先する。
 

@@ -123,7 +123,7 @@ class NarrationTests(unittest.TestCase):
 class NarratedVideoIntegrationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.temporary = tempfile.TemporaryDirectory(prefix="video-editor-narration-test-")
+        cls.temporary = tempfile.TemporaryDirectory(prefix="video-creator-narration-test-")
         cls.addClassCleanup(cls.temporary.cleanup)
         cls.root = Path(cls.temporary.name)
         cls.font_path = resolve_font()

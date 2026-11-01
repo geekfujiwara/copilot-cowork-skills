@@ -181,7 +181,7 @@ async def prepare_scene(index, scene, voice, cache, work, font, allow_online):
 def style_fingerprint(font_path, font):
     image = subtitle_image("Caption style reference.", font)
     return {
-        "renderer": "video-editor-pillow",
+        "renderer": "video-creator-pillow",
         "font_sha256": hashlib.sha256(Path(font_path).read_bytes()).hexdigest(),
         "sample_sha256": hashlib.sha256(image.tobytes()).hexdigest(),
         "sample_size": list(image.size),
